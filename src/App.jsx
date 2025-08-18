@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+import { Routes, Route } from "react-router-dom"
 import { getAllData } from "./util/index";
 import NoPage from "./pages/NoPage";
 import SignUp from "./features/auth/pages/Signuppage";
@@ -21,7 +21,6 @@ function App() {
   }, []);
 
   return (
-   
     <Routes>
       <Route path="/" element={<h1>{message}</h1>}/>
       <Route path="signup" element={<SignUp />}/>
