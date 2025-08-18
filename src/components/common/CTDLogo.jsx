@@ -1,5 +1,3 @@
-import React from "react";
-
 const CTDLogo = ({ size = "medium", variant = "light" }) => {
   const sizeClasses = {
     small: "w-12 h-12",

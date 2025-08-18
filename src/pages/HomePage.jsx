@@ -1,4 +1,3 @@
-import React from "react";
 import CTDLogo from "../components/common/CTDLogo";
 
 const HomePage = () => {

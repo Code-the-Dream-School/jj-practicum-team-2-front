@@ -24,7 +24,11 @@ export default [
   {
     files: ["**/*.{js,mjs,cjs,jsx}"],
     plugins: { react: pluginReact },
-    rules: pluginReact.configs.flat.recommended.rules,
+    rules: {
+      ...pluginReact.configs.flat.recommended.rules,
+      "react/react-in-jsx-scope": "off", // Not needed in React 17+
+      "react/prop-types": "off", // Disable prop-types warnings
+    },
     settings: {
       react: {
         version: "detect", // Automatically detect React version
