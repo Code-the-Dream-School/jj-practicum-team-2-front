@@ -85,7 +85,7 @@ const HomePage = () => {
 
           {/* Sign Up Link */}
           <p className="text-center mt-8 text-gray-600 text-xl">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <span
               className="cursor-pointer font-semibold transition-colors duration-200 hover:underline"
               style={{ color: "#FF5C35" }}
