@@ -1,4 +1,4 @@
-import { defineConfig } from '@tailwindcss/vite'
+import { defineConfig } from "@tailwindcss/vite";
 
 export default defineConfig({
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
@@ -14,11 +14,11 @@ export default defineConfig({
           500: "#64748b",
           600: "#475569",
           700: "#334155",
-          800: "#12284C", 
+          800: "#12284C",
           900: "#0f172a",
         },
         accent: {
-          orange: "#FF5C35", 
+          orange: "#FF5C35",
           blue: "#2563eb",
         },
       },
@@ -27,4 +27,4 @@ export default defineConfig({
       },
     },
   },
-})
+});
