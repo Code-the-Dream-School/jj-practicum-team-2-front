@@ -1,8 +1,27 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
 
 @layer base {
+  :root {
+    --primary-color: #12284c;
+    --accent-color: #ff5c35;
+  }
+
   body {
     font-family: "Inter", system-ui, sans-serif;
+  }
+}
+
+@layer utilities {
+  .bg-primary {
+    background-color: var(--primary-color);
+  }
+
+  .bg-accent {
+    background-color: var(--accent-color);
+  }
+
+  .text-accent {
+    color: var(--accent-color);
   }
 }
