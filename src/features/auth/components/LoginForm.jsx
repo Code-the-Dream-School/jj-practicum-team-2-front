@@ -46,26 +46,26 @@ const LoginForm = () => {
         <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8">
             <h3 className="text-2xl font-semibold mb-2">MentorHub</h3>
             <p className="mb-6 text-gray-600">Welcome back! Please enter your details.</p>
-             <div className="container">
-                        {Object.keys(loginDataErrors).length === 0 && isSubmit ? (
-                            <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                                <span class="font-medium">Login Successful!</span>
-                            </div>
-                        ): (
-                            <pre>{JSON.stringify(loginData, undefined, 2)}</pre>
-                        )}
+            <div className="container">
+                {Object.keys(loginDataErrors).length === 0 && isSubmit ? (
+                    <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
+                        <span class="font-medium">Login Successful!</span>
                     </div>
+                ) : (
+                    <pre>{JSON.stringify(loginData, undefined, 2)}</pre>
+                )}
+            </div>
             <form onSubmit={handleSubmit}>
                 <div className="w-full max-w-md">
                     <div className="mb-4">
                         <label htmlFor="email" className="block mb-1 text-left text-gray-700">Email</label>
                         <input type="text" name="email" value={loginData.email} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" placeholder="Enter your email" />
-                    <p className='text-sm text-red-800'>{loginDataErrors.email}</p>
+                        <p className='text-sm text-red-800'>{loginDataErrors.email}</p>
                     </div>
                     <div className="mb-6">
                         <label htmlFor="password" className="block mb-1 text-left text-gray-700">Password</label>
-                        <input type="password" name="password" value={loginData.password} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" placeholder="Enter your password"  />
-                    <p className='text-sm text-red-800'>{loginDataErrors.password}</p>
+                        <input type="password" name="password" value={loginData.password} onChange={handleChange} className="w-full p-2 border border-gray-300 rounded" placeholder="Enter your password" />
+                        <p className='text-sm text-red-800'>{loginDataErrors.password}</p>
                     </div>
                     <div className="mb-4">
                         <button className="w-3xs bg-blue-900 text-white py-2 rounded" style={{
