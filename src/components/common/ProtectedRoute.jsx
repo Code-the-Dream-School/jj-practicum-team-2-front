@@ -15,7 +15,7 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  if (requiredRole && user?.role !== requiredRole) {   
+  if (requiredRole && user?.role !== requiredRole) {
     const redirectTo =
       user?.role === USER_ROLES.MENTOR
         ? ROUTES.MENTOR_DASHBOARD

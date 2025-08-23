@@ -9,13 +9,13 @@ export const API_ENDPOINTS = {
   MAIN: "/",
 };
 
-export const ROUTES = {  
+export const ROUTES = {
   HOME: "/",
   LOGIN: "/login",
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
-  
+
   STUDENT_DASHBOARD: "/student-dashboard",
   MENTOR_DASHBOARD: "/mentor-dashboard",
   STUDENT_PROFILE: "/student-profile",

@@ -19,21 +19,21 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {      
+    if (error.response?.status === 401) {
       localStorage.removeItem("token");
-      localStorage.removeItem("user");      
+      localStorage.removeItem("user");
     }
     return Promise.reject(error);
-  }
+  },
 );
 
-export const authAPI = {  
+export const authAPI = {
   register: async (userData) => {
     const response = await api.post(API_ENDPOINTS.REGISTER, userData);
     return response.data;
@@ -55,7 +55,7 @@ export const authAPI = {
   },
 };
 
-export const mainAPI = {  
+export const mainAPI = {
   getMain: async () => {
     const response = await api.get(API_ENDPOINTS.MAIN);
     return response.data;
