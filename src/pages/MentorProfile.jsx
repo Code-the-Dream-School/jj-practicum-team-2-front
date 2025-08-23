@@ -3,7 +3,7 @@ import ProtectedRoute from "../components/common/ProtectedRoute";
 
 export default function MentorProfile() {
   return (
-    <ProtectedRoute roles={["mentor"]}>
+    <ProtectedRoute requiredRole="mentor">
       <Layout>
         <div className="p-6">
           <h1 className="text-2xl font-bold text-gray-900 mb-6">

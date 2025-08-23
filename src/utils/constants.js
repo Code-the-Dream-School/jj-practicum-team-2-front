@@ -15,6 +15,7 @@ export const ROUTES = {
   REGISTER: "/register",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
+  VERIFY_EMAIL: "/verify-email",
 
   STUDENT_DASHBOARD: "/student-dashboard",
   MENTOR_DASHBOARD: "/mentor-dashboard",
