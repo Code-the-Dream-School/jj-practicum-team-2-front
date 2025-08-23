@@ -7,21 +7,19 @@ const ProtectedRoute = ({ children, requiredRole = null }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
   const location = useLocation();
 
-  // Show loading while checking authentication
   if (isLoading) {
     return <Loading />;
   }
 
-  // Redirect to login if not authenticated
   if (!isAuthenticated) {
     return <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />;
   }
 
-  // Check role-based access
-  if (requiredRole && user?.role !== requiredRole) {
-    // Redirect to appropriate dashboard based on user role
+  if (requiredRole && user?.role !== requiredRole) {   
     const redirectTo =
-      user?.role === USER_ROLES.MENTOR ? ROUTES.DASHBOARD : ROUTES.DASHBOARD;
+      user?.role === USER_ROLES.MENTOR
+        ? ROUTES.MENTOR_DASHBOARD
+        : ROUTES.STUDENT_DASHBOARD;
 
     return <Navigate to={redirectTo} replace />;
   }

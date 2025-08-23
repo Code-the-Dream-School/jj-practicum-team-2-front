@@ -2,7 +2,6 @@ import { createContext, useContext, useReducer, useEffect } from "react";
 import { authAPI } from "../services/api";
 import { USER_ROLES } from "../utils/constants";
 
-// Auth state structure
 const initialState = {
   user: null,
   isAuthenticated: false,
@@ -10,7 +9,6 @@ const initialState = {
   error: null,
 };
 
-// Action types
 const AUTH_ACTIONS = {
   LOGIN_START: "LOGIN_START",
   LOGIN_SUCCESS: "LOGIN_SUCCESS",
@@ -23,7 +21,6 @@ const AUTH_ACTIONS = {
   CLEAR_ERROR: "CLEAR_ERROR",
 };
 
-// Auth reducer
 const authReducer = (state, action) => {
   switch (action.type) {
     case AUTH_ACTIONS.LOGIN_START:
@@ -80,19 +77,21 @@ const authReducer = (state, action) => {
   }
 };
 
-// Create Context
 const AuthContext = createContext();
 
-// AuthProvider component
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Login function
   const login = async (credentials) => {
     try {
       dispatch({ type: AUTH_ACTIONS.LOGIN_START });
 
       const response = await authAPI.login(credentials);
+
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
 
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
@@ -112,12 +111,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Register function
   const register = async (userData) => {
     try {
       dispatch({ type: AUTH_ACTIONS.REGISTER_START });
 
       const response = await authAPI.register(userData);
+
+      if (response.token) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+      }
 
       dispatch({
         type: AUTH_ACTIONS.REGISTER_SUCCESS,
@@ -138,39 +141,51 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout function
   const logout = async () => {
     try {
       await authAPI.logout();
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
     }
   };
 
-  // Check if user is mentor
   const isMentor = () => {
     return state.user?.role === USER_ROLES.MENTOR;
   };
 
-  // Check if user is student
   const isStudent = () => {
     return state.user?.role === USER_ROLES.STUDENT;
   };
 
-  // Clear error
   const clearError = () => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
   };
 
-  // Check for existing authentication on app load
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // TODO: Add endpoint to check current user
-        // For now, just set loading to false
-        dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+        const token = localStorage.getItem("token");
+        const savedUser = localStorage.getItem("user");
+
+        if (token && savedUser) {
+          try {
+            const userData = JSON.parse(savedUser);
+            dispatch({
+              type: AUTH_ACTIONS.LOGIN_SUCCESS,
+              payload: { user: userData, token },
+            });
+          } catch {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+          }
+        } else {
+          dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+        }
       } catch {
         dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
       }
@@ -180,16 +195,13 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const value = {
-    // State
     ...state,
 
-    // Actions
     login,
     register,
     logout,
     clearError,
 
-    // Helper functions
     isMentor,
     isStudent,
   };
@@ -197,7 +209,6 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
 
-// Custom hook to use auth context
 export const useAuth = () => {
   const context = useContext(AuthContext);
 

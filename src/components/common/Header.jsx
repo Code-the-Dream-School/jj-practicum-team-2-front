@@ -50,20 +50,69 @@ const Header = () => {
                 Recordings
               </Link>
 
+              <Link
+                to={ROUTES.NOTIFICATIONS}
+                className="text-white hover:text-orange-300 transition-colors"
+              >
+                Notifications
+              </Link>
+
+              {/* Student-specific navigation */}
+              {!isMentor() && (
+                <>
+                  <Link
+                    to={ROUTES.BROWSE_MENTORS}
+                    className="text-white hover:text-orange-300 transition-colors"
+                  >
+                    Mentors
+                  </Link>
+                  <Link
+                    to={ROUTES.MY_SESSIONS}
+                    className="text-white hover:text-orange-300 transition-colors"
+                  >
+                    My Sessions
+                  </Link>
+                </>
+              )}
+
               {/* Mentor-only navigation */}
               {isMentor() && (
-                <Link
-                  to={ROUTES.CREATE_SESSION}
-                  className="text-white hover:text-orange-300 transition-colors"
-                >
-                  Create Session
-                </Link>
+                <>
+                  <Link
+                    to={ROUTES.SESSION_MANAGEMENT}
+                    className="text-white hover:text-orange-300 transition-colors"
+                  >
+                    Manage Sessions
+                  </Link>
+                  <Link
+                    to={ROUTES.STUDENTS}
+                    className="text-white hover:text-orange-300 transition-colors"
+                  >
+                    Students
+                  </Link>
+                  <Link
+                    to={ROUTES.ATTENDANCE}
+                    className="text-white hover:text-orange-300 transition-colors"
+                  >
+                    Attendance
+                  </Link>
+                  <Link
+                    to={ROUTES.REPORTS}
+                    className="text-white hover:text-orange-300 transition-colors"
+                  >
+                    Reports
+                  </Link>
+                </>
               )}
 
               {/* User profile and logout */}
               <div className="flex items-center space-x-4 ml-6 border-l border-white/20 pl-6">
                 <Link
-                  to={ROUTES.PROFILE}
+                  to={
+                    isMentor()
+                      ? ROUTES.MENTOR_PROFILE_PAGE
+                      : ROUTES.STUDENT_PROFILE
+                  }
                   className="text-white hover:text-orange-300 transition-colors"
                 >
                   Profile

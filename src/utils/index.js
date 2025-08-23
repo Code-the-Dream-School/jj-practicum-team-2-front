@@ -1,6 +1,5 @@
 import axios from "axios";
 
-// note: not used, but could be used with GET with params
 const getData = async (url, params) => {
   try {
     let res = await axios.get(url, params);
