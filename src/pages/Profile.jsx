@@ -1,13 +1,14 @@
-import {useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 
 export default function Profile() {
+  const [user, setUser] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({});
 
-    const [user, setUser] = useState(null);
-
-    useEffect(() => {
+  useEffect(() => {
     // TODO: Replace with your real API call
-    setUser({
+    const fakeUser = {
       name: "John Doe",
       email: "john.doe@example.com",
       sessionsAttended: 12,
@@ -15,10 +16,26 @@ export default function Profile() {
       upcomingSessions: 1,
       reviewerName: "Sarah Johnson",
       reviewerEmail: "sarah.j@codedream.org",
-    });
+    };
+    setUser(fakeUser);
+    setFormData(fakeUser);
   }, []);
 
   if (!user) return <p className="p-4">Loading profile...</p>;
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSave = () => {
+    // TODO: Replace with API call (PUT/PATCH)
+    setUser(formData);
+    setIsEditing(false);
+    alert("Profile updated!");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
@@ -29,8 +46,29 @@ export default function Profile() {
         </div>
         <div>
           <h1 className="text-2xl font-bold">My Profile</h1>
-          <p className="text-lg">{user.name}</p>
-          <p className="text-sm">{user.email}</p>
+          {isEditing ? (
+            <>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                className="text-black p-1 rounded w-full mt-2"
+              />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                className="text-black p-1 rounded w-full mt-2"
+              />
+            </>
+          ) : (
+            <>
+              <p className="text-lg">{user.name}</p>
+              <p className="text-sm">{user.email}</p>
+            </>
+          )}
         </div>
       </div>
 
@@ -60,21 +98,41 @@ export default function Profile() {
         </p>
         <button
           className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
-          onClick={() =>
-            (window.location.href = `mailto:${user.reviewerEmail}`)
-          }
+          onClick={() => (window.location.href = `mailto:${user.reviewerEmail}`)}
         >
           Email Reviewer
         </button>
       </div>
 
-      {/* Edit Profile Button */}
-      <button
-        className="mt-6 px-6 py-2 bg-green-200 hover:bg-green-300 rounded-md"
-        onClick={() => alert("Edit Profile clicked")}
-      >
-        Edit Profile
-      </button>
+      {/* Edit/Save Buttons */}
+      <div className="mt-6 flex gap-4">
+        {isEditing ? (
+          <>
+            <button
+              className="px-6 py-2 bg-blue-200 hover:bg-blue-300 rounded-md"
+              onClick={handleSave}
+            >
+              Save
+            </button>
+            <button
+              className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+              onClick={() => {
+                setFormData(user); // reset edits
+                setIsEditing(false);
+              }}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <button
+            className="px-6 py-2 bg-green-200 hover:bg-green-300 rounded-md"
+            onClick={() => setIsEditing(true)}
+          >
+            Edit Profile
+          </button>
+        )}
+      </div>
     </div>
   );
 }
