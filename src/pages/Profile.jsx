@@ -16,6 +16,7 @@ export default function Profile() {
       upcomingSessions: 1,
       reviewerName: "Sarah Johnson",
       reviewerEmail: "sarah.j@codedream.org",
+      profileImage: null, // default: none
     };
     setUser(fakeUser);
     setFormData(fakeUser);
@@ -30,6 +31,19 @@ export default function Profile() {
     });
   };
 
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      // preview immediately
+      const imageUrl = URL.createObjectURL(file);
+      setFormData({
+        ...formData,
+        profileImage: imageUrl,
+      });
+      // TODO: for real apps, upload file -> server -> save returned URL
+    }
+  };
+
   const handleSave = () => {
     // TODO: Replace with API call (PUT/PATCH)
     setUser(formData);
@@ -41,10 +55,19 @@ export default function Profile() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
       {/* Header Section */}
       <div className="w-full max-w-4xl bg-[#1E2B3A] text-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6">
-        <div className="w-24 h-24 bg-gray-300 rounded-md flex items-center justify-center">
-          <span className="text-gray-500">📷</span>
+        <div className="w-24 h-24 bg-gray-300 rounded-md flex items-center justify-center overflow-hidden">
+          {formData.profileImage ? (
+            <img
+              src={formData.profileImage}
+              alt="Profile"
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <span className="text-gray-500">📷</span>
+          )}
         </div>
-        <div>
+
+        <div className="flex-1">
           <h1 className="text-2xl font-bold">My Profile</h1>
           {isEditing ? (
             <>
@@ -61,6 +84,13 @@ export default function Profile() {
                 value={formData.email}
                 onChange={handleChange}
                 className="text-black p-1 rounded w-full mt-2"
+              />
+              {/* File input for profile image */}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="mt-2 text-sm text-white"
               />
             </>
           ) : (
