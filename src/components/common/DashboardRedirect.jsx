@@ -1,10 +1,10 @@
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { ROUTES, USER_ROLES } from "../../utils/constants";
+import { ROUTES } from "../../utils/constants";
 import Loading from "./Loading";
 
 export default function DashboardRedirect() {
-  const { user, isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
     return <Loading />;
@@ -14,10 +14,5 @@ export default function DashboardRedirect() {
     return <Navigate to={ROUTES.LOGIN} replace />;
   }
 
-  const dashboardRoute =
-    user?.role === USER_ROLES.MENTOR
-      ? ROUTES.MENTOR_DASHBOARD
-      : ROUTES.STUDENT_DASHBOARD;
-
-  return <Navigate to={dashboardRoute} replace />;
+  return <Navigate to={ROUTES.DASHBOARD} replace />;
 }

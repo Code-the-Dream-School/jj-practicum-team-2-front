@@ -17,6 +17,7 @@ export const ROUTES = {
   RESET_PASSWORD: "/reset-password",
   VERIFY_EMAIL: "/verify-email",
 
+  DASHBOARD: "/dashboard",
   STUDENT_DASHBOARD: "/student-dashboard",
   MENTOR_DASHBOARD: "/mentor-dashboard",
   STUDENT_PROFILE: "/student-profile",

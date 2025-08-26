@@ -153,6 +153,44 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const forceLogout = () => {
+    localStorage.clear();
+    dispatch({ type: AUTH_ACTIONS.LOGOUT });
+  };
+
+  const refreshAuth = () => {
+    const token = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+
+    if (token && savedUser) {
+      try {
+        const userData = JSON.parse(savedUser);
+        console.log("AuthContext: Обновляем пользователя на:", userData);
+        dispatch({
+          type: AUTH_ACTIONS.LOGIN_SUCCESS,
+          payload: { user: userData, token },
+        });
+      } catch {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        dispatch({ type: AUTH_ACTIONS.LOGOUT });
+      }
+    } else {
+      console.log("AuthContext: Очищаем пользователя");
+      dispatch({ type: AUTH_ACTIONS.LOGOUT });
+    }
+  };
+
+  const updateUser = (newUserData) => {
+    localStorage.setItem("user", JSON.stringify(newUserData));
+    localStorage.setItem("token", "mock-token");
+    console.log("AuthContext: Устанавливаем нового пользователя:", newUserData);
+    dispatch({
+      type: AUTH_ACTIONS.LOGIN_SUCCESS,
+      payload: { user: newUserData, token: "mock-token" },
+    });
+  };
+
   const isMentor = () => {
     return state.user?.role === USER_ROLES.MENTOR;
   };
@@ -184,14 +222,47 @@ export const AuthProvider = ({ children }) => {
             dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
           }
         } else {
-          dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
+          // Mock fallback user for testing
+          const mockUser = {
+            id: 1,
+            name: "Test Student",
+            email: "student@test.com",
+            role: "student",
+          };
+
+          dispatch({
+            type: AUTH_ACTIONS.LOGIN_SUCCESS,
+            payload: { user: mockUser, token: "mock-token" },
+          });
         }
       } catch {
         dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
       }
     };
 
+    const handleStorageChange = () => {
+      checkAuth();
+    };
+
+    const handleCustomStorageChange = (event) => {
+      if (event.detail === "auth-update") {
+        checkAuth();
+      }
+    };
+
     checkAuth();
+
+    // listen for localStorage changes
+    window.addEventListener("storage", handleStorageChange);
+    window.addEventListener("auth-storage-change", handleCustomStorageChange);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener(
+        "auth-storage-change",
+        handleCustomStorageChange,
+      );
+    };
   }, []);
 
   const value = {
@@ -200,11 +271,47 @@ export const AuthProvider = ({ children }) => {
     login,
     register,
     logout,
+    forceLogout,
+    refreshAuth,
+    updateUser,
     clearError,
 
     isMentor,
     isStudent,
   };
+
+  // Debugging helpers
+  useEffect(() => {
+    window.switchToMentor = () => {
+      const newUser = {
+        id: 2,
+        name: "Test Mentor",
+        email: "mentor@test.com",
+        role: "mentor",
+      };
+      updateUser(newUser);
+    };
+
+    window.switchToStudent = () => {
+      const newUser = {
+        id: 1,
+        name: "Test Student",
+        email: "student@test.com",
+        role: "student",
+      };
+      updateUser(newUser);
+    };
+
+    window.clearAuth = () => {
+      forceLogout();
+    };
+
+    return () => {
+      delete window.switchToMentor;
+      delete window.switchToStudent;
+      delete window.clearAuth;
+    };
+  }, []);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
