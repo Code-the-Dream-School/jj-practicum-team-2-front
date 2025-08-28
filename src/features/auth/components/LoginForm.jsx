@@ -49,10 +49,10 @@ const LoginForm = () => {
             <div className="container">
                 {Object.keys(loginDataErrors).length === 0 && isSubmit ? (
                     <div className="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400" role="alert">
-                        <span class="font-medium">Login Successful!</span>
+                        <span className="font-medium">Login Successful!</span>
                     </div>
                 ) : (
-                    <pre>{JSON.stringify(loginData, undefined, 2)}</pre>
+                    null
                 )}
             </div>
             <form onSubmit={handleSubmit}>

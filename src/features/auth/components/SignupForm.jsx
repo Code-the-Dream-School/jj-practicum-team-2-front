@@ -64,7 +64,7 @@ const SignupForm = () => {
                         <span class="font-medium">sign up Successful!</span>
                     </div>
                 ) : (
-                    <pre>{JSON.stringify(signUpData, undefined, 2)}</pre>
+                    null
                 )}
             </div>
             <form onSubmit={handleSubmit}>
