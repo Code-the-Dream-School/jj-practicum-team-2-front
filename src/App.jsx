@@ -11,7 +11,7 @@ import "./index.css";
 
 function App() {
   return (
-
+<>
     <Routes>
       <Route path="/" element={<h1>{message}</h1>}/>
       <Route path="signup" element={<SignUp />}/>
@@ -28,7 +28,7 @@ function App() {
         </p>
       </div>
     </div>
-
+    </>
   );
 }
 
