@@ -4,8 +4,11 @@ export const API_BASE_URL =
 export const API_ENDPOINTS = {
   REGISTER: "/auth/register",
   LOGIN: "/auth/login",
-  LOGOUT: "/auth/logout",
+  LOGOUT: "/auth/logout", // Backend uses DELETE method
   PROFILE: "/auth/profile",
+  CHECK_AUTH: "/auth/me", // New endpoint to check authentication
+  FORGOT_PASSWORD: "/auth/forgot-password",
+  RESET_PASSWORD: "/auth/reset-password",
   MAIN: "/",
 };
 

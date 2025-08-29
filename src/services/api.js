@@ -6,28 +6,20 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true,
+  withCredentials: true, // Important: allows sending signed cookies
 });
 
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  },
-);
-
+// Simplified response interceptor - no token management needed
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      // Dispatch custom event for auth context to handle logout
+      window.dispatchEvent(
+        new CustomEvent("auth-expired", {
+          detail: { error: error.response?.data },
+        }),
+      );
     }
     return Promise.reject(error);
   },
@@ -45,12 +37,34 @@ export const authAPI = {
   },
 
   logout: async () => {
-    const response = await api.post(API_ENDPOINTS.LOGOUT);
+    // Backend uses DELETE method for logout
+    const response = await api.delete(API_ENDPOINTS.LOGOUT);
     return response.data;
   },
 
-  getCurrentUser: async () => {
-    const response = await api.get(API_ENDPOINTS.PROFILE);
+  // New method to check current authentication status
+  checkAuth: async () => {
+    // Temporary: skip API call if we're in development and have no cookies
+    // This prevents CORS errors during development
+    if (import.meta.env.DEV) {
+      // Just throw error to use fallback logic
+      throw new Error("Development mode - using fallback auth");
+    }
+
+    // This endpoint needs to be added to backend
+    const response = await api.get("/auth/me");
+    return response.data;
+  },
+
+  // Forgot password functionality
+  forgotPassword: async (email) => {
+    const response = await api.post("/auth/forgot-password", { email });
+    return response.data;
+  },
+
+  // Reset password functionality
+  resetPassword: async (resetData) => {
+    const response = await api.post("/auth/reset-password", resetData);
     return response.data;
   },
 };

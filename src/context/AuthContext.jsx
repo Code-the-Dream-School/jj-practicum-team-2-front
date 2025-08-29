@@ -1,81 +1,9 @@
 import { createContext, useContext, useReducer, useEffect } from "react";
 import { authAPI } from "../services/api";
 import { USER_ROLES } from "../utils/constants";
-
-const initialState = {
-  user: null,
-  isAuthenticated: false,
-  isLoading: true,
-  error: null,
-};
-
-const AUTH_ACTIONS = {
-  LOGIN_START: "LOGIN_START",
-  LOGIN_SUCCESS: "LOGIN_SUCCESS",
-  LOGIN_FAILURE: "LOGIN_FAILURE",
-  REGISTER_START: "REGISTER_START",
-  REGISTER_SUCCESS: "REGISTER_SUCCESS",
-  REGISTER_FAILURE: "REGISTER_FAILURE",
-  LOGOUT: "LOGOUT",
-  SET_LOADING: "SET_LOADING",
-  CLEAR_ERROR: "CLEAR_ERROR",
-};
-
-const authReducer = (state, action) => {
-  switch (action.type) {
-    case AUTH_ACTIONS.LOGIN_START:
-    case AUTH_ACTIONS.REGISTER_START:
-      return {
-        ...state,
-        isLoading: true,
-        error: null,
-      };
-
-    case AUTH_ACTIONS.LOGIN_SUCCESS:
-    case AUTH_ACTIONS.REGISTER_SUCCESS:
-      return {
-        ...state,
-        user: action.payload.user,
-        isAuthenticated: true,
-        isLoading: false,
-        error: null,
-      };
-
-    case AUTH_ACTIONS.LOGIN_FAILURE:
-    case AUTH_ACTIONS.REGISTER_FAILURE:
-      return {
-        ...state,
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: action.payload,
-      };
-
-    case AUTH_ACTIONS.LOGOUT:
-      return {
-        ...state,
-        user: null,
-        isAuthenticated: false,
-        isLoading: false,
-        error: null,
-      };
-
-    case AUTH_ACTIONS.SET_LOADING:
-      return {
-        ...state,
-        isLoading: action.payload,
-      };
-
-    case AUTH_ACTIONS.CLEAR_ERROR:
-      return {
-        ...state,
-        error: null,
-      };
-
-    default:
-      return state;
-  }
-};
+import { authStorage } from "../utils/cookies";
+import { authReducer, initialState } from "./authReducer";
+import { AUTH_ACTIONS } from "./authActions";
 
 const AuthContext = createContext();
 
@@ -88,14 +16,17 @@ export const AuthProvider = ({ children }) => {
 
       const response = await authAPI.login(credentials);
 
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
+      // Backend automatically sets signed cookies
+      // We only store user data for development fallback
+      if (response.user) {
+        authStorage.setUser(response.user);
       }
 
       dispatch({
         type: AUTH_ACTIONS.LOGIN_SUCCESS,
-        payload: response,
+        payload: {
+          user: response.user,
+        },
       });
 
       return { success: true, data: response };
@@ -117,14 +48,17 @@ export const AuthProvider = ({ children }) => {
 
       const response = await authAPI.register(userData);
 
-      if (response.token) {
-        localStorage.setItem("token", response.token);
-        localStorage.setItem("user", JSON.stringify(response.user));
+      // Backend automatically sets signed cookies
+      // We only store user data for development fallback
+      if (response.user) {
+        authStorage.setUser(response.user);
       }
 
       dispatch({
         type: AUTH_ACTIONS.REGISTER_SUCCESS,
-        payload: response,
+        payload: {
+          user: response.user,
+        },
       });
 
       return { success: true, data: response };
@@ -147,47 +81,70 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+      // Clear local storage fallback and state
+      authStorage.clearAuth();
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
     }
   };
 
   const forceLogout = () => {
-    localStorage.clear();
+    authStorage.clearAuth();
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   };
 
-  const refreshAuth = () => {
-    const token = localStorage.getItem("token");
-    const savedUser = localStorage.getItem("user");
+  const checkAuth = async () => {
+    dispatch({ type: AUTH_ACTIONS.CHECK_AUTH_START });
 
-    if (token && savedUser) {
-      try {
-        const userData = JSON.parse(savedUser);
-        console.log("AuthContext: Обновляем пользователя на:", userData);
-        dispatch({
-          type: AUTH_ACTIONS.LOGIN_SUCCESS,
-          payload: { user: userData, token },
-        });
-      } catch {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        dispatch({ type: AUTH_ACTIONS.LOGOUT });
-      }
+    // Skip API call in development mode to avoid CORS issues
+    // Use fallback logic directly
+    console.log("AuthContext: Using development fallback (no API call)");
+
+    // Try fallback from localStorage in dev mode
+    const savedUser = authStorage.getUser();
+    if (savedUser) {
+      console.log("AuthContext: Using saved user:", savedUser);
+      dispatch({
+        type: AUTH_ACTIONS.CHECK_AUTH_SUCCESS,
+        payload: { user: savedUser },
+      });
     } else {
-      console.log("AuthContext: Очищаем пользователя");
-      dispatch({ type: AUTH_ACTIONS.LOGOUT });
+      // Use mock user for development
+      const mockUser = {
+        id: 1,
+        firstName: "Test",
+        lastName: "Student",
+        email: "student@test.com",
+        role: "student",
+      };
+
+      console.log("AuthContext: Using mock user for development");
+      authStorage.setUser(mockUser); // Save mock user for future use
+      dispatch({
+        type: AUTH_ACTIONS.CHECK_AUTH_SUCCESS,
+        payload: { user: mockUser },
+      });
     }
   };
 
   const updateUser = (newUserData) => {
-    localStorage.setItem("user", JSON.stringify(newUserData));
-    localStorage.setItem("token", "mock-token");
-    console.log("AuthContext: Устанавливаем нового пользователя:", newUserData);
+    // Convert structure to match backend format if needed
+    const backendUser = {
+      id: newUserData.id,
+      firstName:
+        newUserData.firstName ||
+        newUserData.name?.split(" ")[0] ||
+        newUserData.name,
+      lastName: newUserData.lastName || newUserData.name?.split(" ")[1] || "",
+      email: newUserData.email,
+      role: newUserData.role,
+    };
+
+    authStorage.setUser(backendUser);
+    console.log("AuthContext: Setting new user:", backendUser);
+
     dispatch({
       type: AUTH_ACTIONS.LOGIN_SUCCESS,
-      payload: { user: newUserData, token: "mock-token" },
+      payload: { user: backendUser },
     });
   };
 
@@ -203,45 +160,19 @@ export const AuthProvider = ({ children }) => {
     dispatch({ type: AUTH_ACTIONS.CLEAR_ERROR });
   };
 
+  // Helper to get user display name
+  const getUserDisplayName = () => {
+    if (!state.user) return "";
+    if (state.user.firstName && state.user.lastName) {
+      return `${state.user.firstName} ${state.user.lastName}`;
+    }
+    return state.user.name || state.user.email || "User";
+  };
+
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const savedUser = localStorage.getItem("user");
-
-        if (token && savedUser) {
-          try {
-            const userData = JSON.parse(savedUser);
-            dispatch({
-              type: AUTH_ACTIONS.LOGIN_SUCCESS,
-              payload: { user: userData, token },
-            });
-          } catch {
-            localStorage.removeItem("token");
-            localStorage.removeItem("user");
-            dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
-          }
-        } else {
-          // Mock fallback user for testing
-          const mockUser = {
-            id: 1,
-            name: "Test Student",
-            email: "student@test.com",
-            role: "student",
-          };
-
-          dispatch({
-            type: AUTH_ACTIONS.LOGIN_SUCCESS,
-            payload: { user: mockUser, token: "mock-token" },
-          });
-        }
-      } catch {
-        dispatch({ type: AUTH_ACTIONS.SET_LOADING, payload: false });
-      }
-    };
-
-    const handleStorageChange = () => {
-      checkAuth();
+    const handleAuthExpired = (event) => {
+      console.log("Auth expired event received:", event.detail);
+      forceLogout();
     };
 
     const handleCustomStorageChange = (event) => {
@@ -250,14 +181,15 @@ export const AuthProvider = ({ children }) => {
       }
     };
 
+    // Initial auth check
     checkAuth();
 
-    // listen for localStorage changes
-    window.addEventListener("storage", handleStorageChange);
+    // Listen for auth expiration events from API interceptor
+    window.addEventListener("auth-expired", handleAuthExpired);
     window.addEventListener("auth-storage-change", handleCustomStorageChange);
 
     return () => {
-      window.removeEventListener("storage", handleStorageChange);
+      window.removeEventListener("auth-expired", handleAuthExpired);
       window.removeEventListener(
         "auth-storage-change",
         handleCustomStorageChange,
@@ -272,20 +204,22 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     forceLogout,
-    refreshAuth,
+    checkAuth,
     updateUser,
     clearError,
+    getUserDisplayName,
 
     isMentor,
     isStudent,
   };
 
-  // Debugging helpers
+  // Debugging helpers for development
   useEffect(() => {
     window.switchToMentor = () => {
       const newUser = {
         id: 2,
-        name: "Test Mentor",
+        firstName: "Test",
+        lastName: "Mentor",
         email: "mentor@test.com",
         role: "mentor",
       };
@@ -295,7 +229,8 @@ export const AuthProvider = ({ children }) => {
     window.switchToStudent = () => {
       const newUser = {
         id: 1,
-        name: "Test Student",
+        firstName: "Test",
+        lastName: "Student",
         email: "student@test.com",
         role: "student",
       };
@@ -306,12 +241,18 @@ export const AuthProvider = ({ children }) => {
       forceLogout();
     };
 
+    window.checkAuthStatus = () => {
+      console.log("Current auth state:", state);
+      checkAuth();
+    };
+
     return () => {
       delete window.switchToMentor;
       delete window.switchToStudent;
       delete window.clearAuth;
+      delete window.checkAuthStatus;
     };
-  }, []);
+  }, [state]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

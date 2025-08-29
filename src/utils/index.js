@@ -21,3 +21,6 @@ const getAllData = async (url) => {
 };
 
 export { getData, getAllData };
+
+// Re-export auth storage utilities for convenience
+export { authStorage, authCookies } from "./cookies";
