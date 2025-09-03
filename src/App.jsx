@@ -2,7 +2,7 @@
 import { Routes, Route } from "react-router-dom";
 // import { getAllData } from "./util/index";
 import NoPage from "./pages/NoPage";
-import SignUp from "./features/auth/pages/Signuppage";
+import SignUp from "./features/auth/pages/SignupPage";
 import Login from "./features/auth/pages/LoginPage";
 // const URL = "http://localhost:8000/api/v1/";
 import { AuthProvider } from "./context/AuthContext";
