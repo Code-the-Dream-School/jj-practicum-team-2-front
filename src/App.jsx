@@ -29,12 +29,12 @@ function App() {
         </p>
       </div>
     </div>
-</>
+
 
     <AuthProvider>
       <Router />
     </AuthProvider>
-
+</>
   );
 }
 
