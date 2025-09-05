@@ -38,7 +38,7 @@ const LoginForm = () => {
     e.preventDefault();
     const errors = validate(loginData);
     setLoginDataErrors(errors);
-    
+
     if (Object.keys(errors).length === 0) {
       setIsSubmitting(true);
       const result = await login(loginData);
@@ -49,14 +49,13 @@ const LoginForm = () => {
     }
   };
 
-
   return (
     <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8">
       <h3 className="text-2xl font-semibold mb-2">MentorHub</h3>
       <p className="mb-6 text-gray-600">
         Welcome back! Please enter your details.
       </p>
-      
+
       <div className="container">
         {loginDataErrors.api && (
           <div
@@ -109,7 +108,6 @@ const LoginForm = () => {
               className="w-3xs bg-blue-900 text-white py-2 rounded"
               style={{
                 background: "#384A68",
-                
               }}
               disabled={isSubmitting}
             >

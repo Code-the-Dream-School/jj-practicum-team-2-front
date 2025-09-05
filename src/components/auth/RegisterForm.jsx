@@ -21,19 +21,19 @@ const SignupForm = () => {
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-      if (type === 'checkbox' && name === 'isMentor') {
-        setSignUpData({
-          ...signUpData,
-          role: checked ? 'mentor' : 'student',
-        });
-      } else {
-        setSignUpData({
-          ...signUpData,
-          [name]: value,
-        });
-      }
+    if (type === "checkbox" && name === "isMentor") {
+      setSignUpData({
+        ...signUpData,
+        role: checked ? "mentor" : "student",
+      });
+    } else {
+      setSignUpData({
+        ...signUpData,
+        [name]: value,
+      });
+    }
   };
-  
+
   const validate = (val) => {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
@@ -67,7 +67,7 @@ const SignupForm = () => {
       errors.password = "password cannot exceed more than 10 characters";
     }
     return errors;
-};
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -84,7 +84,7 @@ const SignupForm = () => {
         password: signUpData.password,
         role: signUpData.role || "student",
         bio: signUpData.bio,
-    };
+      };
 
       const result = await register(payload);
       setIsSubmitting(false);
@@ -93,7 +93,6 @@ const SignupForm = () => {
       else setSignUpDataError({ api: result.error });
     }
   };
-
 
   return (
     <div className="w-full lg:w-1/2 flex flex-col justify-center items-center p-8">
