@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
 import Layout from "../components/layout/Layout";
 import ProtectedRoute from "../components/common/ProtectedRoute";
 import DashboardRedirect from "../components/common/DashboardRedirect";
@@ -22,29 +23,41 @@ import RecordingsPage from "../pages/RecordingsPage";
 import ReportsPage from "../pages/ReportsPage";
 import NotFoundPage from "../pages/NotFoundPage";
 
+// New imports for homepage and auth pages
+import NoPage from "../pages/NoPage";
+import SignUp from "../features/auth/pages/SignupPage";
+import Login from "../features/auth/pages/LoginPage";
+
 const Router = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public routes without Layout */}
-        <Route path="/login" element={<LoginPage />} />
+        {/* Public homepage route ("/") */}
+        <Route
+          path="/"
+          element={
+            <div className="min-h-screen flex items-center justify-center bg-gray-100">
+              <div className="text-center">
+                <h1 className="text-4xl font-bold text-slate-800 mb-4">MentorHub</h1>
+                <p className="text-lg text-slate-600">
+                  Welcome to MentorHub! Your gateway to connecting with mentors and
+                  advancing your career.
+                </p>
+              </div>
+            </div>
+          }
+        />
+
+        {/* Public auth-related routes */}
+        <Route path="/signup" element={<SignUp />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
 
-        {/* Protected routes with Layout */}
+        {/* Protected routes with layout */}
         <Route element={<Layout />}>
-          {/* Default redirect */}
-          <Route
-            path="/"
-            element={
-              <ProtectedRoute>
-                <DashboardRedirect />
-              </ProtectedRoute>
-            }
-          />
-
           <Route
             path="/dashboard"
             element={
@@ -157,8 +170,8 @@ const Router = () => {
           />
         </Route>
 
-        {/* 404 page without Layout */}
-        <Route path="*" element={<NotFoundPage />} />
+        {/* Fallback for undefined routes */}
+        <Route path="*" element={<NoPage />} />
       </Routes>
     </BrowserRouter>
   );
