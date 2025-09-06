@@ -1,8 +1,6 @@
 import { AuthProvider } from "./context/AuthContext";
 import Router from "./router/Router";
-
 import "./index.css";
-
 function App() {
   return (
     <AuthProvider>
@@ -10,5 +8,4 @@ function App() {
     </AuthProvider>
   );
 }
-
 export default App;
