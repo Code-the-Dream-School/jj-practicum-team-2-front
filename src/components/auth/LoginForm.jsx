@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginForm = () => {
   const { login } = useAuth();
@@ -117,7 +117,7 @@ const LoginForm = () => {
           <div>
             <p className="text-gray-600">
               Don&apos;t have an account?{" "}
-              <Link to="/SignUp" className="text-red-700">
+              <Link to="/Register" className="text-red-700">
                 Sign up
               </Link>
             </p>

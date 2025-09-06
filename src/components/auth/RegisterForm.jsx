@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
-const SignupForm = () => {
+const RegisterForm = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
@@ -259,4 +259,4 @@ const SignupForm = () => {
     </div>
   );
 };
-export default SignupForm;
+export default RegisterForm;

@@ -1,5 +1,5 @@
 import WelcomeSidebar from "../components/common/WelcomeSidebar";
-import LoginForm from "../components/common/LoginForm";
+import LoginForm from "../components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
