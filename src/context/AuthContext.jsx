@@ -95,34 +95,35 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = async () => {
     dispatch({ type: AUTH_ACTIONS.CHECK_AUTH_START });
 
-    // Skip API call in development mode to avoid CORS issues
-    // Use fallback logic directly
-    console.log("AuthContext: Using development fallback (no API call)");
+    try {
+      const response = await authAPI.checkAuth();
 
-    // Try fallback from localStorage in dev mode
-    const savedUser = authStorage.getUser();
-    if (savedUser) {
-      console.log("AuthContext: Using saved user:", savedUser);
+      // Save user data to localStorage as backup
+      if (response.user) {
+        authStorage.setUser(response.user);
+      }
+
       dispatch({
         type: AUTH_ACTIONS.CHECK_AUTH_SUCCESS,
-        payload: { user: savedUser },
+        payload: { user: response.user },
       });
-    } else {
-      // Use mock user for development
-      const mockUser = {
-        id: 1,
-        firstName: "Test",
-        lastName: "Student",
-        email: "student@test.com",
-        role: "student",
-      };
-
-      console.log("AuthContext: Using mock user for development");
-      authStorage.setUser(mockUser); // Save mock user for future use
-      dispatch({
-        type: AUTH_ACTIONS.CHECK_AUTH_SUCCESS,
-        payload: { user: mockUser },
-      });
+    } catch (error) {
+      // If API call fails, try to use saved user from localStorage as fallback
+      const savedUser = authStorage.getUser();
+      if (savedUser) {
+        console.log("AuthContext: API failed, using saved user:", savedUser);
+        dispatch({
+          type: AUTH_ACTIONS.CHECK_AUTH_SUCCESS,
+          payload: { user: savedUser },
+        });
+      } else {
+        // No saved user, user is not authenticated
+        dispatch({
+          type: AUTH_ACTIONS.CHECK_AUTH_FAILURE,
+          payload:
+            error.response?.data?.message || "Authentication check failed",
+        });
+      }
     }
   };
 

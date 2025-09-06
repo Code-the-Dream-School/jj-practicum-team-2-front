@@ -44,14 +44,7 @@ export const authAPI = {
 
   // New method to check current authentication status
   checkAuth: async () => {
-    // Temporary: skip API call if we're in development and have no cookies
-    // This prevents CORS errors during development
-    if (import.meta.env.DEV) {
-      // Just throw error to use fallback logic
-      throw new Error("Development mode - using fallback auth");
-    }
-
-    // This endpoint needs to be added to backend
+    // This endpoint is now available on backend
     const response = await api.get("/auth/me");
     return response.data;
   },
