@@ -62,6 +62,23 @@ export const authAPI = {
   },
 };
 
+export const dashboardAPI = {
+  getStudentDashboard: async () => {
+    const response = await api.get("/sessions/student-dashboard");
+    return response.data;
+  },
+
+  registerForSession: async (sessionId) => {
+    const response = await api.post(`/sessions/${sessionId}/register`);
+    return response.data;
+  },
+
+  unregisterFromSession: async (sessionId) => {
+    const response = await api.delete(`/sessions/${sessionId}/unregister`);
+    return response.data;
+  },
+};
+
 export const mainAPI = {
   getMain: async () => {
     const response = await api.get(API_ENDPOINTS.MAIN);
