@@ -4,7 +4,7 @@
 @layer base {
   :root {
     /* Brand Colors */
-    --primary-color: #12284c;
+    --primary-color: #102c54;
     --accent-color: #ff5c35;
 
     /* Status Colors */
@@ -152,7 +152,7 @@
   }
 
   .badge-student {
-    background-color: var(--info-color);
+    background-color: #102c54;
     color: white;
   }
 

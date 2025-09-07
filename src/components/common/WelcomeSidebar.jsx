@@ -5,7 +5,7 @@ const WelcomeSidebar = () => {
     <div
       className="w-full lg:w-1/2 bg-blue-900 text-white flex flex-col justify-center items-center h-64 lg:h-screen p-8"
       style={{
-        background: " #384A68",
+        background: "#102C54",
       }}
     >
       <div>

@@ -56,7 +56,7 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
       {/* Header Section */}
-      <div className="w-full max-w-4xl bg-[#1E2B3A] text-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6">
+      <div className="w-full max-w-4xl bg-[#102C54] text-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6">
         <div className="w-24 h-24 bg-gray-300 rounded-md flex items-center justify-center overflow-hidden">
           {formData.profileImage ? (
             <img
