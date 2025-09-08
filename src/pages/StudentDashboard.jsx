@@ -33,17 +33,30 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        This Week&apos;s Sessions
-      </h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
+      {/* Header Section - using shared styles */}
+      <div className="app-header">
+        <div className="app-header__avatar">
+          <span className="text-4xl">📅</span>
+        </div>
 
-      <WeeklySessionsView
-        sessionsData={dashboardData.thisWeek}
-        myRegistrations={dashboardData.myRegistrations}
-        onRegister={registerForSession}
-        onUnregister={unregisterFromSession}
-      />
+        <div className="app-header__content">
+          <h1 className="app-header__title">This Week&apos;s Sessions</h1>
+          <p className="app-header__description">
+            Manage your learning schedule and join upcoming sessions
+          </p>
+        </div>
+      </div>
+
+      {/* Sessions Content */}
+      <div className="w-full max-w-4xl mt-6">
+        <WeeklySessionsView
+          sessionsData={dashboardData.thisWeek}
+          myRegistrations={dashboardData.myRegistrations}
+          onRegister={registerForSession}
+          onUnregister={unregisterFromSession}
+        />
+      </div>
     </div>
   );
 }
