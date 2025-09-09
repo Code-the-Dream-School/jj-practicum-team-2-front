@@ -9,16 +9,12 @@ const CONFIG = {
     navLink: "text-white hover:text-success transition-colors",
     button: "text-white hover:text-success transition-colors",
     avatar: "w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center",
-    groupButton: (isActive) =>
-      `w-full text-left p-3 rounded-lg transition-colors ${
-        isActive
-          ? "bg-success text-white"
-          : "bg-white/10 text-white hover:bg-white/20"
-      }`,
-    menuItem:
-      "block text-white hover:text-success transition-colors py-2 text-sm pl-2 rounded hover:bg-white/10",
+    groupButton: (isActive) => `w-full text-left p-3 rounded-lg transition-colors ${
+      isActive ? 'bg-success text-white' : 'bg-white/10 text-white hover:bg-white/20'
+    }`,
+    menuItem: "block text-white hover:text-success transition-colors py-2 text-sm pl-2 rounded hover:bg-white/10"
   },
-
+  
   nav: {
     common: [
       { route: ROUTES.DASHBOARD, label: "Dashboard" },
@@ -35,7 +31,7 @@ const CONFIG = {
       { route: ROUTES.STUDENTS, label: "Students" },
       { route: ROUTES.ATTENDANCE, label: "Attendance" },
       { route: ROUTES.REPORTS, label: "Reports" },
-    ],
+    ]
   },
 
   mobileGroups: {
@@ -44,58 +40,46 @@ const CONFIG = {
       getItems: (userRole) => [
         { route: ROUTES.DASHBOARD, label: "Dashboard" },
         { route: ROUTES.SESSIONS, label: "Browse Sessions" },
-        ...(userRole === "student"
-          ? [{ route: ROUTES.MY_SESSIONS, label: "My Sessions" }]
-          : []),
-        ...(userRole === "mentor"
-          ? [{ route: ROUTES.SESSION_MANAGEMENT, label: "Manage Sessions" }]
-          : []),
-        { route: ROUTES.RECORDINGS, label: "Recordings" },
-      ],
+        ...(userRole === 'student' ? [{ route: ROUTES.MY_SESSIONS, label: "My Sessions" }] : []),
+        ...(userRole === 'mentor' ? [{ route: ROUTES.SESSION_MANAGEMENT, label: "Manage Sessions" }] : []),
+        { route: ROUTES.RECORDINGS, label: "Recordings" }
+      ]
     },
     community: {
       title: "People & Community",
-      getItems: (userRole) =>
-        userRole === "student"
-          ? [{ route: ROUTES.BROWSE_MENTORS, label: "Browse Mentors" }]
-          : [
-              { route: ROUTES.STUDENTS, label: "My Students" },
-              { route: ROUTES.REPORTS, label: "Reports & Analytics" },
-              { route: ROUTES.ATTENDANCE, label: "Attendance" },
-            ],
+      getItems: (userRole) => userRole === 'student' 
+        ? [{ route: ROUTES.BROWSE_MENTORS, label: "Browse Mentors" }]
+        : [
+            { route: ROUTES.STUDENTS, label: "My Students" },
+            { route: ROUTES.REPORTS, label: "Reports & Analytics" },
+            { route: ROUTES.ATTENDANCE, label: "Attendance" }
+          ]
     },
     account: {
-      title: "Personal Settings",
+      title: "Personal Settings", 
       getItems: () => [
         { route: null, label: "My Profile", isProfile: true },
-        { route: ROUTES.NOTIFICATIONS, label: "Notifications" },
-      ],
-    },
-  },
+        { route: ROUTES.NOTIFICATIONS, label: "Notifications" }
+      ]
+    }
+  }
 };
 
 const Header = () => {
   const { user, isAuthenticated, logout, isMentor } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeGroup, setActiveGroup] = useState("schedule");
+  const [activeGroup, setActiveGroup] = useState('schedule');
 
-  const userRole = useMemo(
-    () => (isMentor() ? "mentor" : "student"),
-    [isMentor],
-  );
+  const userRole = useMemo(() => isMentor() ? 'mentor' : 'student', [isMentor]);
   const userInitials = useMemo(() => {
     if (!user?.firstName || !user?.lastName) return "?";
     return `${user.firstName[0]}${user.lastName[0]}`;
   }, [user]);
-  const profileRoute = useMemo(
-    () => (isMentor() ? ROUTES.MENTOR_PROFILE_PAGE : ROUTES.STUDENT_PROFILE),
-    [isMentor],
-  );
-  const currentNavItems = useMemo(
-    () => [...CONFIG.nav.common, ...CONFIG.nav[userRole]],
-    [userRole],
-  );
+  const profileRoute = useMemo(() => 
+    isMentor() ? ROUTES.MENTOR_PROFILE_PAGE : ROUTES.STUDENT_PROFILE, [isMentor]);
+  const currentNavItems = useMemo(() => 
+    [...CONFIG.nav.common, ...CONFIG.nav[userRole]], [userRole]);
 
   const handleLogout = async () => {
     await logout();
@@ -106,22 +90,13 @@ const Header = () => {
   const renderDesktopNav = () => (
     <nav className="hidden lg:flex items-center space-x-6">
       {currentNavItems.map((item) => (
-        <Link
-          key={item.route}
-          to={item.route}
-          className={CONFIG.styles.navLink}
-        >
+        <Link key={item.route} to={item.route} className={CONFIG.styles.navLink}>
           {item.label}
         </Link>
       ))}
       <div className="flex items-center space-x-4 ml-6 border-l border-white/20 pl-6">
-        <Link to={profileRoute} className={CONFIG.styles.navLink}>
-          Profile
-        </Link>
-        <button
-          onClick={handleLogout}
-          className={`${CONFIG.styles.button} text-sm`}
-        >
+        <Link to={profileRoute} className={CONFIG.styles.navLink}>Profile</Link>
+        <button onClick={handleLogout} className={`${CONFIG.styles.button} text-sm`}>
           Logout
         </button>
       </div>
@@ -131,27 +106,15 @@ const Header = () => {
   const renderMobileNav = () => (
     <div className="lg:hidden flex items-center space-x-3">
       <div className={CONFIG.styles.avatar}>
-        <span className="text-sm font-semibold text-gray-700">
-          {userInitials}
-        </span>
+        <span className="text-sm font-semibold text-gray-700">{userInitials}</span>
       </div>
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
         className="text-white hover:text-success transition-colors p-2"
         aria-label="Toggle menu"
       >
-        <svg
-          className="w-6 h-6"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M4 6h16M4 12h16M4 18h16"
-          />
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
         </svg>
       </button>
     </div>
@@ -165,9 +128,7 @@ const Header = () => {
     >
       <div className="flex items-center space-x-2">
         <span className="text-lg">{group.icon}</span>
-        <span className="font-medium text-sm">
-          {groupKey.charAt(0).toUpperCase() + groupKey.slice(1)}
-        </span>
+        <span className="font-medium text-sm">{groupKey.charAt(0).toUpperCase() + groupKey.slice(1)}</span>
       </div>
     </button>
   );
@@ -180,25 +141,19 @@ const Header = () => {
 
     return (
       <div>
-        <h4 className="text-success font-semibold text-sm mb-3">
-          {group.title}
-        </h4>
-
-        {activeGroup === "account" && (
+        <h4 className="text-success font-semibold text-sm mb-3">{group.title}</h4>
+        
+        {activeGroup === 'account' && (
           <div className="bg-white/10 rounded-lg p-3 mb-3">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-success rounded-full flex items-center justify-center">
-                <span className="text-xs font-bold text-primary">
-                  {userInitials}
-                </span>
+                <span className="text-xs font-bold text-primary">{userInitials}</span>
               </div>
               <div>
                 <div className="text-white font-medium text-sm">
                   {user?.firstName} {user?.lastName}
                 </div>
-                <div className="text-success text-xs uppercase">
-                  {user?.role}
-                </div>
+                <div className="text-success text-xs uppercase">{user?.role}</div>
               </div>
             </div>
           </div>
@@ -215,13 +170,10 @@ const Header = () => {
               {item.label}
             </Link>
           ))}
-
-          {activeGroup === "account" && (
+          
+          {activeGroup === 'account' && (
             <div className="pt-2 border-t border-white/20 mt-3">
-              <button
-                onClick={handleLogout}
-                className={`block w-full text-left ${CONFIG.styles.menuItem}`}
-              >
+              <button onClick={handleLogout} className={`block w-full text-left ${CONFIG.styles.menuItem}`}>
                 Sign Out
               </button>
             </div>
@@ -231,9 +183,8 @@ const Header = () => {
     );
   };
 
-  const renderMobileDropdown = () =>
-    isAuthenticated &&
-    isMenuOpen && (
+  const renderMobileDropdown = () => (
+    isAuthenticated && isMenuOpen && (
       <div className="lg:hidden bg-primary border-t border-white/20">
         <div className="container mx-auto px-4 py-4">
           <div className="grid grid-cols-5 gap-4">
@@ -242,23 +193,24 @@ const Header = () => {
               <h3 className="text-success font-semibold text-xs uppercase tracking-wide mb-3">
                 Menu
               </h3>
-              {Object.entries(CONFIG.mobileGroups).map(([key, group]) =>
-                renderGroupButton(key, group),
+              {Object.entries(CONFIG.mobileGroups).map(([key, group]) => 
+                renderGroupButton(key, group)
               )}
             </div>
 
             {/* Group Content */}
-            <div className="col-span-3 space-y-3">{renderGroupContent()}</div>
+            <div className="col-span-3 space-y-3">
+              {renderGroupContent()}
+            </div>
           </div>
         </div>
       </div>
-    );
+    )
+  );
 
   const renderGuestNav = () => (
     <nav className="flex items-center space-x-4">
-      <Link to={ROUTES.LOGIN} className={CONFIG.styles.navLink}>
-        Sign In
-      </Link>
+      <Link to={ROUTES.LOGIN} className={CONFIG.styles.navLink}>Sign In</Link>
       <Link
         to={ROUTES.REGISTER}
         className="bg-accent text-white px-4 py-2 rounded-lg hover:bg-success transition-colors"
