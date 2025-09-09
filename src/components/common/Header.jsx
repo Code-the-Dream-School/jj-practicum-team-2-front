@@ -188,7 +188,7 @@ const Header = () => {
           <div className="bg-white/10 rounded-lg p-3 mb-3">
             <div className="flex items-center space-x-3">
               <div className="w-8 h-8 bg-success rounded-full flex items-center justify-center">
-                <span className="text-xs font-bold text-white">
+                <span className="text-xs font-bold text-primary">
                   {userInitials}
                 </span>
               </div>

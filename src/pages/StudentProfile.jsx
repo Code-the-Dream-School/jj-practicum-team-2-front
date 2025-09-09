@@ -72,29 +72,36 @@ export default function Profile() {
         <div className="app-header__content">
           <h1 className="app-header__title">My Profile</h1>
           {isEditing ? (
-            <>
+            <div className="w-full space-y-3 mt-4">
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="text-black p-1 rounded w-full mt-2"
+                placeholder="Full Name"
+                className="w-full text-black p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
               />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="text-black p-1 rounded w-full mt-2"
+                placeholder="Email Address"
+                className="w-full text-black p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
               />
               {/* File input for profile image */}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="mt-2 text-sm text-white"
-              />
-            </>
+              <div className="w-full">
+                <label className="block text-sm font-medium text-white mb-2">
+                  Profile Image
+                </label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="w-full text-sm text-white bg-white/20 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-white file:text-gray-700 hover:file:bg-gray-100"
+                />
+              </div>
+            </div>
           ) : (
             <>
               <p className="app-header__subtitle">{user.name}</p>
@@ -139,14 +146,14 @@ export default function Profile() {
       </div>
 
       {/* Edit/Save Buttons */}
-      <div className="mt-6 flex gap-4">
+      <div className="mt-6 flex flex-col sm:flex-row gap-3">
         {isEditing ? (
           <>
-            <button className="btn-blue px-6" onClick={handleSave}>
-              Save
+            <button className="btn-blue" onClick={handleSave}>
+              Save Changes
             </button>
             <button
-              className="btn-light px-6"
+              className="btn-light"
               onClick={() => {
                 setFormData(user); // reset edits
                 setIsEditing(false);
@@ -156,7 +163,7 @@ export default function Profile() {
             </button>
           </>
         ) : (
-          <button className="btn-green px-6" onClick={() => setIsEditing(true)}>
+          <button className="btn-green" onClick={() => setIsEditing(true)}>
             Edit Profile
           </button>
         )}
