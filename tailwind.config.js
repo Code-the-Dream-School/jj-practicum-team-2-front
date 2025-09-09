@@ -14,12 +14,12 @@ export default defineConfig({
           500: "#64748b",
           600: "#475569",
           700: "#334155",
-          800: "#12284C",
+          800: "#102C54",
           900: "#0f172a",
         },
         accent: {
           orange: "#FF5C35",
-          blue: "#2563eb",
+          blue: "#102C54",
         },
       },
       fontFamily: {

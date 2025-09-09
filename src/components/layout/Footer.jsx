@@ -2,7 +2,7 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="text-white py-8" style={{ backgroundColor: "#102C54" }}>
       <div className="container mx-auto px-4 text-center">
         <p className="text-gray-300">
           Footer component - Content will be implemented here

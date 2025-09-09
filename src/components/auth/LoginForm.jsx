@@ -107,7 +107,7 @@ const LoginForm = () => {
             <button
               className="w-3xs bg-blue-900 text-white py-2 rounded"
               style={{
-                background: "#384A68",
+                background: "#102C54",
               }}
               disabled={isSubmitting}
             >

@@ -214,6 +214,9 @@ const RegisterForm = () => {
               value={signUpData.bio}
               className="block w-full text-sm p-2 border rounded-lg focus:ring-blue-500 border-gray-300"
               placeholder="Your bio here..."
+              style={{
+                focusRingColor: "#102C54",
+              }}
             ></textarea>
           </div>
 
@@ -240,7 +243,7 @@ const RegisterForm = () => {
               disabled={isSubmitting}
               className="w-3xs bg-blue-900 text-white py-2 rounded"
               style={{
-                background: "linear-gradient(to bottom, #1e3a8a, #384A68)",
+                background: "#102C54",
               }}
             >
               {isSubmitting ? "Signing up..." : "Sign up"}

@@ -56,8 +56,8 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
       {/* Header Section */}
-      <div className="w-full max-w-4xl bg-[#1E2B3A] text-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6">
-        <div className="w-24 h-24 bg-gray-300 rounded-md flex items-center justify-center overflow-hidden">
+      <div className="app-header">
+        <div className="app-header__avatar">
           {formData.profileImage ? (
             <img
               src={formData.profileImage}
@@ -69,8 +69,8 @@ export default function Profile() {
           )}
         </div>
 
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">My Profile</h1>
+        <div className="app-header__content">
+          <h1 className="app-header__title">My Profile</h1>
           {isEditing ? (
             <>
               <input
@@ -97,59 +97,56 @@ export default function Profile() {
             </>
           ) : (
             <>
-              <p className="text-lg">{user.name}</p>
-              <p className="text-sm">{user.email}</p>
+              <p className="app-header__subtitle">{user.name}</p>
+              <p className="app-header__description">{user.email}</p>
             </>
           )}
         </div>
       </div>
 
       {/* Session Stats Card */}
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-md p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-4">Session Stats</h2>
-        <p>Total Sessions Attended: {user.sessionsAttended}</p>
-        <p>Sessions This Week: {user.sessionsThisWeek}</p>
-        <p>Upcoming Sessions: {user.upcomingSessions}</p>
-        <button
-          className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
-          onClick={() => navigate("/my-sessions")}
-        >
-          Manage Sessions
-        </button>
+      <div className="info-card">
+        <h2 className="card-title">Session Stats</h2>
+        <div className="card-content">
+          <p>Total Sessions Attended: {user.sessionsAttended}</p>
+          <p>Sessions This Week: {user.sessionsThisWeek}</p>
+          <p>Upcoming Sessions: {user.upcomingSessions}</p>
+          <button onClick={() => navigate("/my-sessions")}>
+            Manage Sessions
+          </button>
+        </div>
       </div>
 
       {/* Homework Reviewer Card */}
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-md p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-2">Homework Reviewer</h2>
-        <p className="text-sm">
-          Contact Information:
-          <br />
-          {user.reviewerName}
-          <br />
-          {user.reviewerEmail}
-        </p>
-        <button
-          className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
-          onClick={() =>
-            (window.location.href = `mailto:${user.reviewerEmail}`)
-          }
-        >
-          Email Reviewer
-        </button>
+      <div className="info-card">
+        <h2 className="card-title">Homework Reviewer</h2>
+        <div className="card-content">
+          <p>
+            Contact Information:
+            <br />
+            {user.reviewerName}
+            <br />
+            {user.reviewerEmail}
+          </p>
+          <button
+            onClick={() =>
+              (window.location.href = `mailto:${user.reviewerEmail}`)
+            }
+          >
+            Email Reviewer
+          </button>
+        </div>
       </div>
 
       {/* Edit/Save Buttons */}
       <div className="mt-6 flex gap-4">
         {isEditing ? (
           <>
-            <button
-              className="px-6 py-2 bg-blue-200 hover:bg-blue-300 rounded-md"
-              onClick={handleSave}
-            >
+            <button className="btn-blue px-6" onClick={handleSave}>
               Save
             </button>
             <button
-              className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+              className="btn-light px-6"
               onClick={() => {
                 setFormData(user); // reset edits
                 setIsEditing(false);
@@ -159,10 +156,7 @@ export default function Profile() {
             </button>
           </>
         ) : (
-          <button
-            className="px-6 py-2 bg-green-200 hover:bg-green-300 rounded-md"
-            onClick={() => setIsEditing(true)}
-          >
+          <button className="btn-green px-6" onClick={() => setIsEditing(true)}>
             Edit Profile
           </button>
         )}
