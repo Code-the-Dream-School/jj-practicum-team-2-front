@@ -149,11 +149,11 @@ export default function Profile() {
       <div className="mt-6 flex flex-col sm:flex-row gap-3">
         {isEditing ? (
           <>
-            <button className="btn-blue" onClick={handleSave}>
+            <button className="btn btn-blue" onClick={handleSave}>
               Save Changes
             </button>
             <button
-              className="btn-light"
+              className="btn btn-light"
               onClick={() => {
                 setFormData(user); // reset edits
                 setIsEditing(false);
@@ -163,7 +163,7 @@ export default function Profile() {
             </button>
           </>
         ) : (
-          <button className="btn-green" onClick={() => setIsEditing(true)}>
+          <button className="btn btn-green" onClick={() => setIsEditing(true)}>
             Edit Profile
           </button>
         )}

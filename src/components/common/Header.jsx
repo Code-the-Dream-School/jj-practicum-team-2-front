@@ -7,10 +7,10 @@ import { useState, useMemo } from "react";
 const CONFIG = {
   styles: {
     navLink: "text-white hover:text-success transition-colors",
-    button: "text-white hover:text-success transition-colors",
+    button: "btn",
     avatar: "w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center",
     groupButton: (isActive) =>
-      `w-full text-left p-3 rounded-lg transition-colors ${
+      `w-full text-center p-3 rounded-lg transition-colors ${
         isActive
           ? "bg-success text-white"
           : "bg-white/10 text-white hover:bg-white/20"
@@ -104,7 +104,7 @@ const Header = () => {
   };
 
   const renderDesktopNav = () => (
-    <nav className="hidden lg:flex items-center space-x-6">
+    <nav className="hidden xl:flex items-center space-x-6">
       {currentNavItems.map((item) => (
         <Link
           key={item.route}
@@ -129,7 +129,7 @@ const Header = () => {
   );
 
   const renderMobileNav = () => (
-    <div className="lg:hidden flex items-center space-x-3">
+    <div className="xl:hidden flex items-center space-x-3">
       <div className={CONFIG.styles.avatar}>
         <span className="text-sm font-semibold text-gray-700">
           {userInitials}
@@ -161,9 +161,9 @@ const Header = () => {
     <button
       key={groupKey}
       onClick={() => setActiveGroup(groupKey)}
-      className={CONFIG.styles.groupButton(activeGroup === groupKey)}
+      className={`${CONFIG.styles.groupButton(activeGroup === groupKey)} mobile-menu-button`}
     >
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center justify-center space-x-2">
         <span className="text-lg">{group.icon}</span>
         <span className="font-medium text-sm">
           {groupKey.charAt(0).toUpperCase() + groupKey.slice(1)}
@@ -180,7 +180,7 @@ const Header = () => {
 
     return (
       <div>
-        <h4 className="text-success font-semibold text-sm mb-3">
+        <h4 className="text-success font-semibold text-sm mb-3 px-3">
           {group.title}
         </h4>
 
@@ -234,21 +234,27 @@ const Header = () => {
   const renderMobileDropdown = () =>
     isAuthenticated &&
     isMenuOpen && (
-      <div className="lg:hidden bg-primary border-t border-white/20">
+      <div className="xl:hidden bg-primary border-t border-white/20">
         <div className="container mx-auto px-4 py-4">
-          <div className="grid grid-cols-5 gap-4">
-            {/* Group Buttons */}
-            <div className="col-span-2 space-y-2">
-              <h3 className="text-success font-semibold text-xs uppercase tracking-wide mb-3">
+          {/* Responsive grid for different screen sizes */}
+          <div className="grid grid-cols-3 gap-12">
+            {/* Group Buttons - always 1/3 width, vertical layout */}
+            <div className="col-span-1 space-y-2">
+              <h3 className="text-success font-semibold text-sm uppercase tracking-wide mb-3 px-3">
                 Menu
               </h3>
-              {Object.entries(CONFIG.mobileGroups).map(([key, group]) =>
-                renderGroupButton(key, group),
-              )}
+              {/* Buttons always vertical */}
+              <div className="flex flex-col gap-2">
+                {Object.entries(CONFIG.mobileGroups).map(([key, group]) =>
+                  renderGroupButton(key, group),
+                )}
+              </div>
             </div>
 
-            {/* Group Content */}
-            <div className="col-span-3 space-y-3">{renderGroupContent()}</div>
+            {/* Group Content - always 2/3 width */}
+            <div className="col-span-2 space-y-3 min-h-0">
+              {renderGroupContent()}
+            </div>
           </div>
         </div>
       </div>
