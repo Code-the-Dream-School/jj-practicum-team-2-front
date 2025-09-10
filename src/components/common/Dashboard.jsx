@@ -10,6 +10,6 @@ export default function Dashboard() {
     return <Loading />;
   }
 
-  // Рендерим компонент в зависимости от роли пользователя
+  // Render component based on user role
   return user?.role === "mentor" ? <MentorDashboard /> : <StudentDashboard />;
 }

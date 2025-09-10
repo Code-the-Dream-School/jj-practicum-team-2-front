@@ -16,10 +16,25 @@ export default defineConfig({
           700: "#334155",
           800: "#102C54",
           900: "#0f172a",
+          DEFAULT: "#102C54", // adding main primary color
         },
         accent: {
           orange: "#FF5C35",
           blue: "#102C54",
+          DEFAULT: "#FF5C35", // adding main accent color
+        },
+        success: {
+          DEFAULT: "#10b981", // adding main success color
+          50: "#ecfdf5",
+          100: "#d1fae5",
+          500: "#10b981",
+          600: "#059669",
+        },
+        warning: {
+          DEFAULT: "#f59e0b",
+        },
+        error: {
+          DEFAULT: "#ef4444",
         },
       },
       fontFamily: {
