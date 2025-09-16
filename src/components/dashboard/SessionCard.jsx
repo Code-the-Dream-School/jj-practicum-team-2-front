@@ -121,39 +121,51 @@ export default function SessionCard({
   };
 
   return (
-    <div className="info-card">
-      <div className="flex items-center mb-4">
-        <div className="flex-shrink-0">{getStatusIcon()}</div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-0 flex-1 ml-3 leading-none">
-          {session.title}
-        </h3>
+    <div className="flex flex-row gap-6 items-start bg-white rounded-lg shadow p-6">
+      {/* Left: Status Icon */}
+      <div className="flex flex-col items-center justify-start min-w-[40px]">
+        {getStatusIcon()}
       </div>
-
-      <div className="card-content">
-        <p>
-          Mentor: {session.mentorId?.firstName} {session.mentorId?.lastName}
-        </p>
-        <p>{formatDate(session.date)}</p>
-        {session.courseName && <p>Course: {session.courseName}</p>}
-        {isRegistered && statusType === "upcoming" && (
-          <p className="text-green-600">✓ You&apos;re registered</p>
-        )}
-        {getActionButton()}
-
-        {/* Message display */}
-        {message && (
-          <div
-            className={`mt-2 p-2 text-sm rounded message-fade-in ${
-              message.includes("Success") ||
-              message.includes("registered") ||
-              message.includes("unregistered")
-                ? "bg-green-50 text-green-600"
-                : "bg-red-50 text-red-600"
-            }`}
-          >
-            {message}
-          </div>
-        )}
+      {/* Right: Card Content */}
+      <div className="flex-1">
+        <div className="flex items-center mb-4">
+          <h3 className="text-lg font-semibold text-gray-900 mb-0 flex-1 leading-none">
+            {session.title}
+          </h3>
+        </div>
+        <div className="card-content">
+          <div className="flex flex-row gap-4 items-center mb-2">
+            <span className="text-sm text-gray-600">
+              {/* mentor full name. */}
+              {session.mentorId?.firstName} {session.mentorId?.lastName}
+            </span>
+            <span className="ml-4 text-sm text-gray-600">{formatDate(session.date)}</span>
+            </div>
+            {session.courseName && (
+             <span className="block mt-1 text-xs text-blue-600 font-medium bg-blue-50 rounded px-2 py-0.5 w-fit"> {session.courseName}</span>)}
+            
+          
+          <hr className="my-2 bg-gray-50" />
+          <p>{session.description}</p>
+          {isRegistered && statusType === "upcoming" && (
+            <p className="text-green-600">✓ You&apos;re registered</p>
+          )}
+          <div className="mt-3">{getActionButton()}</div>
+          {/* Message display */}
+          {message && (
+            <div
+              className={`mt-2 p-2 text-sm rounded message-fade-in ${
+                message.includes("Success") ||
+                message.includes("registered") ||
+                message.includes("unregistered")
+                  ? "bg-green-50 text-green-600"
+                  : "bg-red-50 text-red-600"
+              }`}
+            >
+              {message}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
