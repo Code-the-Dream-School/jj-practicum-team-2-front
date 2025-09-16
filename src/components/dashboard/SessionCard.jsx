@@ -139,12 +139,17 @@ export default function SessionCard({
               {/* mentor full name. */}
               {session.mentorId?.firstName} {session.mentorId?.lastName}
             </span>
-            <span className="ml-4 text-sm text-gray-600">{formatDate(session.date)}</span>
-            </div>
-            {session.courseName && (
-             <span className="block mt-1 text-xs text-blue-600 font-medium bg-blue-50 rounded px-2 py-0.5 w-fit"> {session.courseName}</span>)}
-            
-          
+            <span className="ml-4 text-sm text-gray-600">
+              {formatDate(session.date)}
+            </span>
+          </div>
+          {session.courseName && (
+            <span className="block mt-1 text-xs text-blue-600 font-medium bg-blue-50 rounded px-2 py-0.5 w-fit">
+              {" "}
+              {session.courseName}
+            </span>
+          )}
+
           <hr className="my-2 bg-gray-50" />
           <p>{session.description}</p>
           {isRegistered && statusType === "upcoming" && (
