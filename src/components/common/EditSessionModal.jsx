@@ -13,8 +13,6 @@ function EditSessionModal({
     { _id: "python", name: "Python" },
   ];
 
-  const mergedClasses = classes.length > 0 ? classes : defaultClasses;
-
   const [form, setForm] = useState({
     title: "",
     description: "",
