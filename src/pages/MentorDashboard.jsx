@@ -4,54 +4,116 @@ import { useDashboard } from "../hooks/useDashboard";
 import Loading from "../components/common/Loading";
 import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
 import Modal from "../components/common/Modal";
+import EditSessionModal from "../components/common/EditSessionModal";
+import { AcademicCapIcon } from '@heroicons/react/24/solid';
 
 export default function MentorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [sessionToEdit, setSessionToEdit] = useState(null);
   const [sessions, setSessions] = useState([]);
   const { user } = useAuth();
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
   const handleCreateSession = async (sessionData) => {
-    // Build payload for backend
-    const payload = {
-      title: sessionData.title,
-      description: sessionData.description,
-      classId: sessionData.classId,
-      courseName: sessionData.courseName,
-      mentorId: user._id,
-      date: sessionData.date,
-      zoomLink: sessionData.zoomLink,
-      duration: sessionData.duration,
-      type: sessionData.type,
-      capacity: sessionData.capacity,
-    };
+    // First, get the default class ID
+    try {
+      const classResponse = await fetch("http://localhost:8000/api/v1/classes", {
+        credentials: 'include'
+      });
+      
+      let defaultClassId;
+      if (classResponse.ok) {
+        const classes = await classResponse.json();
+        defaultClassId = classes[0]?._id; 
+      }
 
-    // try {
-    //   const response = await fetch("/api/sessions", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify(payload),
-    //   });
+      if (!defaultClassId) {
+        alert("No classes available. Please contact administrator.");
+        return;
+      }
 
-    //   if (!response.ok) {
-    //     const errorData = await response.json();
-    //     alert("Error: " + errorData.message);
-    //     return;
-    //   }
+      const payload = {
+        title: sessionData.title,
+        description: sessionData.description,
+        classId: defaultClassId, 
+        courseName: sessionData.courseName,
+        mentorId: user.id,
+        date: sessionData.date,
+        zoomLink: sessionData.zoomLink,
+        duration: sessionData.duration,
+        type: sessionData.type,
+        capacity: sessionData.capacity,
+      };
 
-    //   const newSession = await response.json();
-    //   setSessions((prev) => [
-    //     ...prev,
-    //     { ...newSession, createdBy: `${user.firstName || ""} ${user.lastName || ""}`.trim() }
-    //   ]);
-    //   // Optionally, refresh dashboard data here
-    // } catch (err) {
-    //   alert("Failed to create session.");
-    // }
-    console.log(payload);
+      const response = await fetch("http://localhost:8000/api/v1/sessions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: 'include',
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert("Error: " + errorData.message);
+        return;
+      }
+
+      const newSession = await response.json();
+      setSessions((prev) => [
+        ...prev,
+        { ...newSession, createdBy: `${user.firstName || ""} ${user.lastName || ""}`.trim() }
+      ]);
+      
+      alert("Session created successfully!");
+      setIsModalOpen(false);
+      window.location.reload(); 
+      
+    } catch (err) {
+      console.error("Create session error:", err);
+      alert("Failed to create session. Please try again.");
+    }
+  };
+
+  const handleEditSession = async (sessionData) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/v1/sessions/${sessionToEdit._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: 'include',
+        body: JSON.stringify(sessionData),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert("Error: " + errorData.message);
+        return;
+      }
+
+      alert("Session updated successfully!");
+      setIsEditModalOpen(false);
+      setSessionToEdit(null);
+      window.location.reload(); // Refresh to show updated session
+      
+    } catch (err) {
+      console.error("Edit session error:", err);
+      alert("Failed to update session. Please try again.");
+    }
+  };
+
+  const openEditModal = (session) => {
+    setSessionToEdit(session);
+    setIsEditModalOpen(true);
+  };
+
+  const closeEditModal = () => {
+    setIsEditModalOpen(false);
+    setSessionToEdit(null);
   };
 
   const {
@@ -88,7 +150,9 @@ export default function MentorDashboard() {
       {/* Header Section - using shared styles */}
       <div className="app-header">
         <div className="app-header__avatar">
-          <span className="text-4xl">📅</span>
+          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+            <AcademicCapIcon className="w-8 h-8 text-blue-600" />
+          </div>
         </div>
 
         <div className="app-header__content text-center">
@@ -104,7 +168,7 @@ export default function MentorDashboard() {
         <button
           onClick={handleOpenModal}
           type="button"
-          className="focus:outline-none text-dark bg-green-700 hover:bg-green-800 focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2 me-2 mb-2 dark:bg-green-400 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          className="btn btn-primary btn-rounded"
         >
           Create a New Session
         </button>
@@ -127,6 +191,20 @@ export default function MentorDashboard() {
         </ul>
       </div>
 
+      {/* Modals */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onSubmit={handleCreateSession}
+      />
+      
+      <EditSessionModal
+        isOpen={isEditModalOpen}
+        onClose={closeEditModal}
+        onSubmit={handleEditSession}
+        session={sessionToEdit}
+      />
+
       {/* Sessions Content */}
       <div className="w-full max-w-4xl mt-6">
         <WeeklySessionsView
@@ -134,6 +212,7 @@ export default function MentorDashboard() {
           myRegistrations={dashboardData.myRegistrations}
           onRegister={registerForSession}
           onUnregister={unregisterFromSession}
+          onEditSession={openEditModal}
         />
       </div>
     </div>

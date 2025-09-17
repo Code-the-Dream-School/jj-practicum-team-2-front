@@ -2,11 +2,12 @@ import SessionCard from "./SessionCard";
 
 export default function WeeklySessionsView({
   sessionsData,
-  myRegistrations,
+  myRegistrations = [],
   onRegister,
   onUnregister,
+  onEditSession,
 }) {
-  const { inProgress, upcoming, past } = sessionsData;
+  const { inProgress = [], upcoming = [], past = [], pastSessions = [] } = sessionsData || {};
 
   const renderSessions = (title, sessions, statusType) => (
     <div className="mb-10">
@@ -15,7 +16,7 @@ export default function WeeklySessionsView({
         <div className="section-underline"></div>
       </div>
 
-      {sessions.length === 0 ? (
+      {sessions?.length === 0 ? (
         <div className="card p-8 text-center">
           <div className="text-gray-400 mb-2">
             <svg
@@ -36,14 +37,15 @@ export default function WeeklySessionsView({
         </div>
       ) : (
         <div className="space-y-6">
-          {sessions.map((session) => (
+          {sessions?.map((session) => (
             <SessionCard
               key={session._id}
               session={session}
               statusType={statusType}
-              isRegistered={myRegistrations.includes(session._id)}
+              isRegistered={myRegistrations?.includes(session._id)}
               onRegister={() => onRegister(session._id)}
               onUnregister={() => onUnregister(session._id)}
+              onEditSession={onEditSession}
             />
           ))}
         </div>
@@ -55,7 +57,7 @@ export default function WeeklySessionsView({
     <div className="space-y-2">
       {renderSessions("In Progress", inProgress, "inProgress")}
       {renderSessions("Upcoming", upcoming, "upcoming")}
-      {renderSessions("Past Sessions", past, "past")}
+      {renderSessions("Past Sessions", past || pastSessions, "past")}
     </div>
   );
 }
