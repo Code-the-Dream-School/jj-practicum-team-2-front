@@ -1,18 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function EditSessionModal({
-  isOpen,
-  onClose,
-  onSubmit,
-  session,
-  classes = [],
-}) {
-  const defaultClasses = [
-    { _id: "react", name: "React JS" },
-    { _id: "node", name: "Node JS" },
-    { _id: "python", name: "Python" },
-  ];
-
+function EditSessionModal({ isOpen, onClose, onSubmit, session }) {
   const [form, setForm] = useState({
     title: "",
     description: "",
