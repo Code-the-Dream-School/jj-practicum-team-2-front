@@ -12,11 +12,36 @@ export const useDashboard = () => {
     stats: {
       attendedThisWeek: 0,
       upcomingThisWeek: 0,
+      plannedThisWeek: 0,
+      weeklyGoalMet: false,
     },
   });
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sessionFilter, setSessionFilter] = useState("all"); // "all" or "my"
+
+  // Filter sessions based on current filter setting
+  const getFilteredSessions = (sessions) => {
+    if (sessionFilter === "my") {
+      return sessions.filter(session => 
+        dashboardData.myRegistrations.includes(session._id)
+      );
+    }
+    return sessions;
+  };
+
+  // Calculate weekly goal status
+  const calculateWeeklyGoal = (data) => {
+    const goalTarget = data.stats?.weeklyGoal || 3;
+    const attendedCount = data.stats.attendedThisWeek;
+    
+    return {
+      ...data.stats,
+      weeklyGoal: goalTarget,
+      weeklyGoalMet: attendedCount >= goalTarget,
+    };
+  };
 
   const loadDashboard = async () => {
     try {
@@ -24,7 +49,7 @@ export const useDashboard = () => {
       setError(null);
 
       // TEMP: Mock data for testing UI
-      const now = new Date();
+     /* const now = new Date();
       const mockData = {
         thisWeek: {
           inProgress: [
@@ -55,6 +80,17 @@ export const useDashboard = () => {
               capacity: 25,
               status: "scheduled",
             },
+            {
+              _id: "66f234567890abcdef123459",
+              title: "CSS Grid and Flexbox",
+              courseName: "CSS Mastery",
+              description: "Master modern CSS layout techniques",
+              mentorId: { firstName: "Emma", lastName: "Wilson" },
+              date: new Date(now.getTime() + 24 * 60 * 60 * 1000), // Tomorrow
+              participants: [],
+              capacity: 15,
+              status: "scheduled",
+            },
           ],
           past: [
             {
@@ -69,24 +105,49 @@ export const useDashboard = () => {
               capacity: 30,
               recordingUrl: "https://zoom.us/recording1",
               status: "completed",
+              attended: true,
+            },
+            {
+              _id: "66f234567890abcdef123460",
+              title: "Git Version Control",
+              courseName: "Development Tools",
+              description: "Learn essential Git commands and workflows",
+              mentorId: { firstName: "John", lastName: "Brown" },
+              date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+              participants: [{ _id: "user1" }],
+              capacity: 20,
+              recordingUrl: "https://zoom.us/recording2",
+              status: "completed",
+              attended: false,
             },
           ],
         },
         myRegistrations: [
           "66f234567890abcdef123456",
+          "66f234567890abcdef123457",
           "66f234567890abcdef123458",
+          "66f234567890abcdef123460",
         ],
         stats: {
           attendedThisWeek: 1,
-          upcomingThisWeek: 1,
+          upcomingThisWeek: 3,
         },
       };
 
-      setDashboardData(mockData);
+      // Calculate enhanced stats with weekly goal
+      const enhancedData = {
+        ...mockData,
+        stats: calculateWeeklyGoal(mockData),
+      };
+
+      setDashboardData(enhancedData);*/
 
       // Uncomment below to fetch real data from API
-      //const data = await dashboardAPI.getStudentDashboard();
-      //setDashboardData(data);
+      const data = await dashboardAPI.getStudentDashboard();
+      setDashboardData({
+        ...data,
+        stats: calculateWeeklyGoal(data),
+      });
     } catch (err) {
       setError(err.response?.data?.message || "Failed to load dashboard");
       console.error("Dashboard load error:", err);
@@ -153,6 +214,40 @@ export const useDashboard = () => {
     }
   };
 
+  const updateWeeklyGoal = async (newGoal) => {
+    try {
+      await dashboardAPI.updateWeeklyGoal(newGoal);
+      
+      // Update local state
+      setDashboardData((prev) => ({
+        ...prev,
+        stats: {
+          ...prev.stats,
+          weeklyGoal: newGoal,
+          weeklyGoalMet: prev.stats.attendedThisWeek >= newGoal,
+        },
+      }));
+
+      return { success: true, message: "Weekly goal updated successfully!" };
+    } catch (err) {
+      console.error('Weekly goal update error:', err);
+      
+      // Extract the actual error message from the response
+      let errorMessage = "Failed to update weekly goal";
+
+      if (err.response?.status === 400) {
+        errorMessage = err.response.data?.message || "Invalid weekly goal value";
+      } else if (err.response?.status === 401) {
+        errorMessage = "Please log in to update your weekly goal";
+      } else if (err.message && !err.message.includes("Failed to update weekly goal")) {
+        // Avoid circular error messages
+        errorMessage = err.message;
+      }
+
+      throw new Error(errorMessage);
+    }
+  };
+
   useEffect(() => {
     loadDashboard();
   }, []);
@@ -164,5 +259,6 @@ export const useDashboard = () => {
     loadDashboard,
     registerForSession,
     unregisterFromSession,
+    updateWeeklyGoal,
   };
 };

@@ -68,6 +68,11 @@ export const dashboardAPI = {
     return response.data;
   },
 
+  updateWeeklyGoal: async (weeklyGoal) => {
+    const response = await api.put("/sessions/weekly-goal", { weeklyGoal });
+    return response.data;
+  },
+
   registerForSession: async (sessionId) => {
     const response = await api.post(`/sessions/${sessionId}/register`);
     return response.data;
