@@ -68,33 +68,41 @@ export default function SessionCard({
 
   const handleCancelSession = async () => {
     const confirmed = window.confirm(
-      `Are you sure you want to cancel "${session.title}"?\n\nThis will notify all ${session.participants?.length || 0} registered participants.`
+      `Are you sure you want to cancel "${session.title}"?\n\nThis will notify all ${session.participants?.length || 0} registered participants.`,
     );
-    
+
     if (!confirmed) {
       return { success: false, message: "Cancellation aborted" };
     }
 
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/sessions/${session._id}/cancel`, {
-        method: "PUT",
-        credentials: 'include',
-      });
+      const response = await fetch(
+        `http://localhost:8000/api/v1/sessions/${session._id}/cancel`,
+        {
+          method: "PUT",
+          credentials: "include",
+        },
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
-        return { success: false, message: errorData.message || "Failed to cancel session" };
+        return {
+          success: false,
+          message: errorData.message || "Failed to cancel session",
+        };
       }
 
       setTimeout(() => {
-        window.location.reload(); 
+        window.location.reload();
       }, 1500);
-      
+
       return { success: true, message: "Session canceled successfully!" };
-      
     } catch (error) {
       console.error("Cancel session error:", error);
-      return { success: false, message: "Failed to cancel session. Please try again." };
+      return {
+        success: false,
+        message: "Failed to cancel session. Please try again.",
+      };
     }
   };
 
@@ -209,11 +217,16 @@ export default function SessionCard({
           ) : (
             <button
               onClick={() => handleAction(onRegister)}
-              disabled={isLoading || session.participants?.length >= session.capacity}
+              disabled={
+                isLoading || session.participants?.length >= session.capacity
+              }
               className="btn btn-primary btn-rounded"
             >
-              {isLoading ? "Registering..." : 
-               session.participants?.length >= session.capacity ? "Session Full" : "Book Session"}
+              {isLoading
+                ? "Registering..."
+                : session.participants?.length >= session.capacity
+                  ? "Session Full"
+                  : "Book Session"}
             </button>
           );
         case "past":
@@ -241,7 +254,9 @@ export default function SessionCard({
         {isMentor() && (
           <div className="text-sm text-gray-500 flex items-center gap-1">
             <span>👥</span>
-            <span>{session.participants?.length || 0}/{session.capacity}</span>
+            <span>
+              {session.participants?.length || 0}/{session.capacity}
+            </span>
           </div>
         )}
       </div>

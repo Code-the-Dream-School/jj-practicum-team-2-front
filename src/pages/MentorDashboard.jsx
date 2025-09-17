@@ -5,7 +5,7 @@ import Loading from "../components/common/Loading";
 import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
 import Modal from "../components/common/Modal";
 import EditSessionModal from "../components/common/EditSessionModal";
-import { AcademicCapIcon } from '@heroicons/react/24/solid';
+import { AcademicCapIcon } from "@heroicons/react/24/solid";
 
 export default function MentorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -19,14 +19,17 @@ export default function MentorDashboard() {
   const handleCreateSession = async (sessionData) => {
     // First, get the default class ID
     try {
-      const classResponse = await fetch("http://localhost:8000/api/v1/classes", {
-        credentials: 'include'
-      });
-      
+      const classResponse = await fetch(
+        "http://localhost:8000/api/v1/classes",
+        {
+          credentials: "include",
+        },
+      );
+
       let defaultClassId;
       if (classResponse.ok) {
         const classes = await classResponse.json();
-        defaultClassId = classes[0]?._id; 
+        defaultClassId = classes[0]?._id;
       }
 
       if (!defaultClassId) {
@@ -37,7 +40,7 @@ export default function MentorDashboard() {
       const payload = {
         title: sessionData.title,
         description: sessionData.description,
-        classId: defaultClassId, 
+        classId: defaultClassId,
         courseName: sessionData.courseName,
         mentorId: user.id,
         date: sessionData.date,
@@ -52,7 +55,7 @@ export default function MentorDashboard() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: 'include',
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -65,13 +68,15 @@ export default function MentorDashboard() {
       const newSession = await response.json();
       setSessions((prev) => [
         ...prev,
-        { ...newSession, createdBy: `${user.firstName || ""} ${user.lastName || ""}`.trim() }
+        {
+          ...newSession,
+          createdBy: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
+        },
       ]);
-      
+
       alert("Session created successfully!");
       setIsModalOpen(false);
-      window.location.reload(); 
-      
+      window.location.reload();
     } catch (err) {
       console.error("Create session error:", err);
       alert("Failed to create session. Please try again.");
@@ -80,14 +85,17 @@ export default function MentorDashboard() {
 
   const handleEditSession = async (sessionData) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/v1/sessions/${sessionToEdit._id}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `http://localhost:8000/api/v1/sessions/${sessionToEdit._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify(sessionData),
         },
-        credentials: 'include',
-        body: JSON.stringify(sessionData),
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
@@ -99,7 +107,6 @@ export default function MentorDashboard() {
       setIsEditModalOpen(false);
       setSessionToEdit(null);
       window.location.reload(); // Refresh to show updated session
-      
     } catch (err) {
       console.error("Edit session error:", err);
       alert("Failed to update session. Please try again.");
@@ -197,7 +204,7 @@ export default function MentorDashboard() {
         onClose={handleCloseModal}
         onSubmit={handleCreateSession}
       />
-      
+
       <EditSessionModal
         isOpen={isEditModalOpen}
         onClose={closeEditModal}

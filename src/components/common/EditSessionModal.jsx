@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
 
-function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) {
+function EditSessionModal({
+  isOpen,
+  onClose,
+  onSubmit,
+  session,
+  classes = [],
+}) {
   const defaultClasses = [
     { _id: "react", name: "React JS" },
     { _id: "node", name: "Node JS" },
@@ -25,7 +31,7 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
     if (isOpen && session) {
       const sessionDate = new Date(session.date);
       const formattedDate = sessionDate.toISOString().slice(0, 16); // Формат для datetime-local
-      
+
       setForm({
         title: session.title || "",
         description: session.description || "",
@@ -77,9 +83,7 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
       <div className="relative p-4 w-full max-w-md max-h-full">
         <div className="relative bg-white rounded-lg shadow-sm">
           <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t border-gray-200">
-            <h3 className="text-lg font-semibold text-black">
-              Edit Session
-            </h3>
+            <h3 className="text-lg font-semibold text-black">Edit Session</h3>
             <button
               type="button"
               onClick={onClose}
@@ -97,11 +101,13 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
               </svg>
             </button>
           </div>
-          
+
           <form className="p-4 md:p-5" onSubmit={handleSubmit}>
             <div className="grid gap-4 mb-4 grid-cols-2">
               <div className="col-span-2">
-                <label className="block mb-2 text-sm font-medium text-black">Title</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Title
+                </label>
                 <input
                   type="text"
                   name="title"
@@ -112,9 +118,11 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
                   required
                 />
               </div>
-              
+
               <div className="col-span-2">
-                <label className="block mb-2 text-sm font-medium text-black">Description</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Description
+                </label>
                 <textarea
                   name="description"
                   value={form.description}
@@ -127,7 +135,9 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
               </div>
 
               <div className="col-span-2 sm:col-span-1">
-                <label className="block mb-2 text-sm font-medium text-black">Date / Time</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Date / Time
+                </label>
                 <input
                   type="datetime-local"
                   name="date"
@@ -139,7 +149,9 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
               </div>
 
               <div className="col-span-2 sm:col-span-1">
-                <label className="block mb-2 text-sm font-medium text-black">Duration (minutes)</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Duration (minutes)
+                </label>
                 <input
                   type="number"
                   name="duration"
@@ -152,7 +164,9 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
               </div>
 
               <div className="col-span-2">
-                <label className="block mb-2 text-sm font-medium text-black">Zoom Link</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Zoom Link
+                </label>
                 <input
                   type="url"
                   name="zoomLink"
@@ -165,7 +179,9 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
               </div>
 
               <div className="col-span-2 sm:col-span-1">
-                <label className="block mb-2 text-sm font-medium text-black">Type</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Type
+                </label>
                 <select
                   name="type"
                   value={form.type}
@@ -179,7 +195,9 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
               </div>
 
               <div className="col-span-2 sm:col-span-1">
-                <label className="block mb-2 text-sm font-medium text-black">Capacity</label>
+                <label className="block mb-2 text-sm font-medium text-black">
+                  Capacity
+                </label>
                 <input
                   type="number"
                   name="capacity"
@@ -191,11 +209,8 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session, classes = [] }) 
                 />
               </div>
             </div>
-            
-            <button
-              type="submit"
-              className="btn btn-primary btn-rounded"
-            >
+
+            <button type="submit" className="btn btn-primary btn-rounded">
               Update Session
             </button>
           </form>

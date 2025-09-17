@@ -89,7 +89,9 @@ export const dashboardAPI = {
   },
 
   markAttendance: async (sessionId, attendeeIds) => {
-    const response = await api.post(`/sessions/${sessionId}/attendance`, { attendeeIds });
+    const response = await api.post(`/sessions/${sessionId}/attendance`, {
+      attendeeIds,
+    });
     return response.data;
   },
 };

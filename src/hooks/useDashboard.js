@@ -126,14 +126,14 @@ export const useDashboard = () => {
       */
 
       // Use appropriate API based on user role
-      const data = isMentor() 
+      const data = isMentor()
         ? await dashboardAPI.getMentorDashboard()
         : await dashboardAPI.getStudentDashboard();
 
-      console.log('Dashboard data loaded:', data); 
+      console.log("Dashboard data loaded:", data);
       setDashboardData(data);
     } catch (err) {
-      console.error("Dashboard load error:", err); 
+      console.error("Dashboard load error:", err);
       setError(err.response?.data?.message || "Failed to load dashboard");
     } finally {
       setLoading(false);
@@ -209,15 +209,19 @@ export const useDashboard = () => {
 
       return { success: true, message: "Weekly goal updated successfully!" };
     } catch (err) {
-      console.error('Weekly goal update error:', err);
-      
+      console.error("Weekly goal update error:", err);
+
       let errorMessage = "Failed to update weekly goal";
 
       if (err.response?.status === 400) {
-        errorMessage = err.response.data?.message || "Invalid weekly goal value";
+        errorMessage =
+          err.response.data?.message || "Invalid weekly goal value";
       } else if (err.response?.status === 401) {
         errorMessage = "Please log in to update your weekly goal";
-      } else if (err.message && !err.message.includes("Failed to update weekly goal")) {
+      } else if (
+        err.message &&
+        !err.message.includes("Failed to update weekly goal")
+      ) {
         errorMessage = err.message;
       }
 
@@ -230,7 +234,7 @@ export const useDashboard = () => {
       await dashboardAPI.markAttendance(sessionId, attendeeIds);
 
       await loadDashboard();
-      
+
       return { success: true, message: "Attendance marked successfully!" };
     } catch (err) {
       let errorMessage = "Failed to mark attendance";
@@ -249,7 +253,7 @@ export const useDashboard = () => {
 
   useEffect(() => {
     loadDashboard();
-  }, []); 
+  }, []);
 
   return {
     dashboardData,

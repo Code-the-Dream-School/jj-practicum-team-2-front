@@ -7,7 +7,12 @@ export default function WeeklySessionsView({
   onUnregister,
   onEditSession,
 }) {
-  const { inProgress = [], upcoming = [], past = [], pastSessions = [] } = sessionsData || {};
+  const {
+    inProgress = [],
+    upcoming = [],
+    past = [],
+    pastSessions = [],
+  } = sessionsData || {};
 
   const renderSessions = (title, sessions, statusType) => (
     <div className="mb-10">
