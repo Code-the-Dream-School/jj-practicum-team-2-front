@@ -1,16 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 function Modal({ isOpen, onClose, onSubmit, classes = [] }) {
-  // Default class options if none are passed as props
-  const defaultClasses = [
-    { _id: "react", name: "React JS" },
-    { _id: "node", name: "Node JS" },
-    { _id: "python", name: "Python" },
-  ];
-
-  // Use provided classes if available, otherwise fallback to default
-  const mergedClasses = classes.length > 0 ? classes : defaultClasses;
-
   const [form, setForm] = useState({
     title: "",
     description: "",
@@ -131,7 +121,7 @@ function Modal({ isOpen, onClose, onSubmit, classes = [] }) {
                   required
                 >
                   <option value="">Select class</option>
-                  {mergedClasses.map((cls) => (
+                  {classes.map((cls) => (
                     <option key={cls._id} value={cls._id}>
                       {cls.name}
                     </option>

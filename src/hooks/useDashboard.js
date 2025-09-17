@@ -260,6 +260,7 @@ export const useDashboard = () => {
     loading,
     error,
     loadDashboard,
+    refreshDashboard: loadDashboard, // Add alias for refresh functionality
     registerForSession,
     unregisterFromSession,
     updateWeeklyGoal,

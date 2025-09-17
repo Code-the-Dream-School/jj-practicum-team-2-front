@@ -13,6 +13,16 @@ export default function MentorDashboard() {
   const [sessionToEdit, setSessionToEdit] = useState(null);
   const [sessions, setSessions] = useState([]);
   const { user } = useAuth();
+  
+  const {
+    dashboardData,
+    loading,
+    error,
+    registerForSession,
+    unregisterFromSession,
+    refreshDashboard, // Add refresh function from hook
+  } = useDashboard();
+
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
@@ -76,7 +86,8 @@ export default function MentorDashboard() {
 
       alert("Session created successfully!");
       setIsModalOpen(false);
-      window.location.reload();
+      // Refresh dashboard data instead of page reload
+      refreshDashboard();
     } catch (err) {
       console.error("Create session error:", err);
       alert("Failed to create session. Please try again.");
@@ -106,7 +117,8 @@ export default function MentorDashboard() {
       alert("Session updated successfully!");
       setIsEditModalOpen(false);
       setSessionToEdit(null);
-      window.location.reload(); // Refresh to show updated session
+      // Refresh dashboard data instead of page reload
+      refreshDashboard();
     } catch (err) {
       console.error("Edit session error:", err);
       alert("Failed to update session. Please try again.");
@@ -123,14 +135,6 @@ export default function MentorDashboard() {
     setSessionToEdit(null);
   };
 
-  const {
-    dashboardData,
-    loading,
-    error,
-    registerForSession,
-    unregisterFromSession,
-  } = useDashboard();
-
   if (loading) return <Loading />;
 
   if (error) {
@@ -143,7 +147,7 @@ export default function MentorDashboard() {
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             className="btn-primary"
-            onClick={() => window.location.reload()}
+            onClick={refreshDashboard}
           >
             Retry
           </button>
@@ -220,6 +224,7 @@ export default function MentorDashboard() {
           onRegister={registerForSession}
           onUnregister={unregisterFromSession}
           onEditSession={openEditModal}
+          onSessionUpdate={refreshDashboard} // Pass refresh function to child
         />
       </div>
     </div>

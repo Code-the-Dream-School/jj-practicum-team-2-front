@@ -6,6 +6,7 @@ export default function WeeklySessionsView({
   onRegister,
   onUnregister,
   onEditSession,
+  onSessionUpdate, // Add callback for session updates
 }) {
   const {
     inProgress = [],
@@ -51,6 +52,7 @@ export default function WeeklySessionsView({
               onRegister={() => onRegister(session._id)}
               onUnregister={() => onUnregister(session._id)}
               onEditSession={onEditSession}
+              onSessionUpdate={onSessionUpdate} // Pass through to SessionCard
             />
           ))}
         </div>

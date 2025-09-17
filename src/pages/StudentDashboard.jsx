@@ -9,6 +9,7 @@ export default function StudentDashboard() {
     error,
     registerForSession,
     unregisterFromSession,
+    refreshDashboard, // Add refresh function from hook
   } = useDashboard();
 
   if (loading) return <Loading />;
@@ -23,7 +24,7 @@ export default function StudentDashboard() {
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             className="btn-primary"
-            onClick={() => window.location.reload()}
+            onClick={refreshDashboard}
           >
             Retry
           </button>

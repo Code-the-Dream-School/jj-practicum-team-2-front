@@ -8,6 +8,7 @@ export default function SessionCard({
   onRegister,
   onUnregister,
   onEditSession,
+  onSessionUpdate, // Add callback for session updates
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -92,9 +93,12 @@ export default function SessionCard({
         };
       }
 
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
+      // Call parent component to refresh data instead of page reload
+      if (onSessionUpdate) {
+        setTimeout(() => {
+          onSessionUpdate();
+        }, 1500);
+      }
 
       return { success: true, message: "Session canceled successfully!" };
     } catch (error) {
