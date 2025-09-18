@@ -1,17 +1,23 @@
 import { useState, useEffect } from "react";
 import { dashboardAPI } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 export const useDashboard = () => {
+  const { isMentor } = useAuth();
   const [dashboardData, setDashboardData] = useState({
     thisWeek: {
       inProgress: [],
       upcoming: [],
       past: [],
+      pastSessions: [], // for mentor dashboard
     },
     myRegistrations: [],
     stats: {
       attendedThisWeek: 0,
       upcomingThisWeek: 0,
+      totalSessions: 0, // for mentor
+      totalParticipants: 0, // for mentor
+      upcomingSessions: 0, // for mentor
     },
   });
 
@@ -23,7 +29,8 @@ export const useDashboard = () => {
       setLoading(true);
       setError(null);
 
-      // TEMP: Mock data for testing UI
+      // TEMP: Mock data for testing UI - keep commented for development
+      /* 
       const now = new Date();
       const mockData = {
         thisWeek: {
@@ -55,6 +62,17 @@ export const useDashboard = () => {
               capacity: 25,
               status: "scheduled",
             },
+            {
+              _id: "66f234567890abcdef123459",
+              title: "CSS Grid and Flexbox",
+              courseName: "CSS Mastery",
+              description: "Master modern CSS layout techniques",
+              mentorId: { firstName: "Emma", lastName: "Wilson" },
+              date: new Date(now.getTime() + 24 * 60 * 60 * 1000), // Tomorrow
+              participants: [],
+              capacity: 15,
+              status: "scheduled",
+            },
           ],
           past: [
             {
@@ -69,27 +87,54 @@ export const useDashboard = () => {
               capacity: 30,
               recordingUrl: "https://zoom.us/recording1",
               status: "completed",
+              attended: true,
+            },
+            {
+              _id: "66f234567890abcdef123460",
+              title: "Git Version Control",
+              courseName: "Development Tools",
+              description: "Learn essential Git commands and workflows",
+              mentorId: { firstName: "John", lastName: "Brown" },
+              date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+              participants: [{ _id: "user1" }],
+              capacity: 20,
+              recordingUrl: "https://zoom.us/recording2",
+              status: "completed",
+              attended: false,
             },
           ],
         },
         myRegistrations: [
           "66f234567890abcdef123456",
+          "66f234567890abcdef123457",
           "66f234567890abcdef123458",
+          "66f234567890abcdef123460",
         ],
         stats: {
           attendedThisWeek: 1,
-          upcomingThisWeek: 1,
+          upcomingThisWeek: 3,
         },
       };
 
-      setDashboardData(mockData);
+      // Calculate enhanced stats with weekly goal
+      const enhancedData = {
+        ...mockData,
+        stats: calculateWeeklyGoal(mockData),
+      };
 
-      // Uncomment below to fetch real data from API
-      //const data = await dashboardAPI.getStudentDashboard();
-      //setDashboardData(data);
+      setDashboardData(enhancedData);
+      */
+
+      // Use appropriate API based on user role
+      const data = isMentor()
+        ? await dashboardAPI.getMentorDashboard()
+        : await dashboardAPI.getStudentDashboard();
+
+      console.log("Dashboard data loaded:", data);
+      setDashboardData(data);
     } catch (err) {
-      setError(err.response?.data?.message || "Failed to load dashboard");
       console.error("Dashboard load error:", err);
+      setError(err.response?.data?.message || "Failed to load dashboard");
     } finally {
       setLoading(false);
     }
@@ -99,7 +144,6 @@ export const useDashboard = () => {
     try {
       await dashboardAPI.registerForSession(sessionId);
 
-      // Update local state - add session to registrations
       setDashboardData((prev) => ({
         ...prev,
         myRegistrations: [...prev.myRegistrations, sessionId],
@@ -109,7 +153,6 @@ export const useDashboard = () => {
     } catch (err) {
       let errorMessage = "Failed to register for session";
 
-      // Handle specific error cases
       if (err.response?.status === 404) {
         errorMessage = "Session not found. It may have been canceled.";
       } else if (err.response?.status === 400) {
@@ -127,7 +170,6 @@ export const useDashboard = () => {
     try {
       await dashboardAPI.unregisterFromSession(sessionId);
 
-      // Update local state - remove session from registrations
       setDashboardData((prev) => ({
         ...prev,
         myRegistrations: prev.myRegistrations.filter((id) => id !== sessionId),
@@ -140,13 +182,69 @@ export const useDashboard = () => {
     } catch (err) {
       let errorMessage = "Failed to unregister from session";
 
-      // Handle specific error cases
       if (err.response?.status === 404) {
         errorMessage = "Session not found. You may already be unregistered.";
       } else if (err.response?.status === 400) {
         errorMessage =
           err.response.data?.message ||
           "Unable to unregister from this session";
+      }
+
+      return { success: false, message: errorMessage };
+    }
+  };
+
+  const updateWeeklyGoal = async (newGoal) => {
+    try {
+      await dashboardAPI.updateWeeklyGoal(newGoal);
+
+      setDashboardData((prev) => ({
+        ...prev,
+        stats: {
+          ...prev.stats,
+          weeklyGoal: newGoal,
+          weeklyGoalMet: prev.stats.attendedThisWeek >= newGoal,
+        },
+      }));
+
+      return { success: true, message: "Weekly goal updated successfully!" };
+    } catch (err) {
+      console.error("Weekly goal update error:", err);
+
+      let errorMessage = "Failed to update weekly goal";
+
+      if (err.response?.status === 400) {
+        errorMessage =
+          err.response.data?.message || "Invalid weekly goal value";
+      } else if (err.response?.status === 401) {
+        errorMessage = "Please log in to update your weekly goal";
+      } else if (
+        err.message &&
+        !err.message.includes("Failed to update weekly goal")
+      ) {
+        errorMessage = err.message;
+      }
+
+      throw new Error(errorMessage);
+    }
+  };
+
+  const markAttendance = async (sessionId, attendeeIds) => {
+    try {
+      await dashboardAPI.markAttendance(sessionId, attendeeIds);
+
+      await loadDashboard();
+
+      return { success: true, message: "Attendance marked successfully!" };
+    } catch (err) {
+      let errorMessage = "Failed to mark attendance";
+
+      if (err.response?.status === 400) {
+        errorMessage = err.response.data?.message || "Invalid attendance data";
+      } else if (err.response?.status === 401) {
+        errorMessage = "Please log in to mark attendance";
+      } else if (err.response?.status === 404) {
+        errorMessage = "Session not found";
       }
 
       return { success: false, message: errorMessage };
@@ -162,7 +260,10 @@ export const useDashboard = () => {
     loading,
     error,
     loadDashboard,
+    refreshDashboard: loadDashboard, // Add alias for refresh functionality
     registerForSession,
     unregisterFromSession,
+    updateWeeklyGoal,
+    markAttendance,
   };
 };
