@@ -162,15 +162,19 @@ export default function WeeklyGoalIndicator({
           </p>
         </div>
         
-        {/* Session Counts - Simplified */}
+        {/* Session Counts - Идеально выровненные */}
         <div className="flex gap-8">
-          <div className="text-center">
-            <div className="text-3xl font-bold text-blue-600">{attendedSessions}</div>
-            <div className="text-sm text-gray-500 uppercase tracking-wide">Attended</div>
+          {/* Attended Column */}
+          <div className="flex flex-col items-center min-w-[80px]">
+            <div className="text-3xl font-bold text-blue-600 leading-none">{attendedSessions}</div>
+            <div className="text-sm text-gray-500 uppercase tracking-wide mt-1">Attended</div>
           </div>
-          <div className="text-center">
-            {isEditing ? (
-              <div className="flex flex-col items-center gap-2">
+          
+          {/* Goal Column */}
+          <div className="flex flex-col items-center min-w-[80px] relative">
+            {/* Edit Mode Popup */}
+            {isEditing && (
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-lg p-3 shadow-lg z-10 -mt-2">
                 <input
                   type="number"
                   min="1"
@@ -178,11 +182,11 @@ export default function WeeklyGoalIndicator({
                   value={tempGoal}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyPress}
-                  className="w-20 text-center text-3xl font-bold text-green-600 border border-gray-300 rounded px-2 py-1"
+                  className="w-16 text-center text-2xl font-bold text-green-600 border border-gray-300 rounded px-1 py-1 mb-2"
                   autoFocus
                   disabled={isLoading}
                 />
-                <div className="flex gap-1">
+                <div className="flex gap-1 justify-center">
                   <button
                     onClick={handleSave}
                     disabled={isLoading}
@@ -199,19 +203,20 @@ export default function WeeklyGoalIndicator({
                   </button>
                 </div>
               </div>
-            ) : (
-              <div 
-                className="cursor-pointer hover:bg-gray-50 rounded p-1 transition-colors"
-                onClick={handleGoalClick}
-                title="Click to edit weekly goal"
-              >
-                <div className="text-3xl font-bold text-green-600">{weeklyGoal}</div>
-                <div className="text-sm text-gray-500 uppercase tracking-wide flex items-center justify-center gap-1">
-                  Goal
-                  <PencilIcon className="w-4 h-4" />
-                </div>
-              </div>
             )}
+            
+            {/* Goal Display */}
+            <div 
+              className="cursor-pointer hover:bg-gray-50 rounded p-1 transition-colors flex flex-col items-center"
+              onClick={handleGoalClick}
+              title="Click to edit weekly goal"
+            >
+              <div className="text-3xl font-bold text-green-600 leading-none">{weeklyGoal}</div>
+              <div className="text-sm text-gray-500 uppercase tracking-wide mt-1 flex items-center gap-1">
+                Goal
+                <PencilIcon className="w-4 h-4 text-gray-400" />
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -206,7 +206,7 @@ body {
   color: var(--accent-color);
 }
 .text-success {
-  color: var (--success-color);
+  color: var(--success-color);
 }
 
 /* Additional styles for responsive Header menu */

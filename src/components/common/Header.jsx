@@ -120,7 +120,7 @@ const Header = () => {
         </Link>
         <button
           onClick={handleLogout}
-          className={`${CONFIG.styles.button} text-sm`}
+          className="btn btn-accent"
         >
           Logout
         </button>
