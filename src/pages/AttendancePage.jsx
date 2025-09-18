@@ -44,7 +44,7 @@ export default function AttendancePage() {
     setSelectedAttendees((prev) =>
       prev.includes(studentId)
         ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
+        : [...prev, studentId],
     );
   };
 
@@ -139,7 +139,9 @@ export default function AttendancePage() {
               )}
             </>
           ) : (
-            <p className="text-gray-500">Select a session to manage attendance.</p>
+            <p className="text-gray-500">
+              Select a session to manage attendance.
+            </p>
           )}
         </div>
       </div>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 const AttendanceStatus = ({ sessions }) => {
   return (
@@ -7,7 +7,7 @@ const AttendanceStatus = ({ sessions }) => {
       <ul>
         {sessions.map((session) => (
           <li key={session._id}>
-            {session.title} — {session.attended ? 'Present' : 'Absent'}
+            {session.title} — {session.attended ? "Present" : "Absent"}
           </li>
         ))}
       </ul>

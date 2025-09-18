@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { dashboardAPI } from '../../services/api';
+import React, { useEffect, useState } from "react";
+import { dashboardAPI } from "../../services/api";
 
 const MarkAttendance = ({ sessionId }) => {
   const [students, setStudents] = useState([]);
@@ -11,7 +11,7 @@ const MarkAttendance = ({ sessionId }) => {
         const data = await dashboardAPI.getSessionAttendance(sessionId);
         setStudents(data.students);
       } catch (err) {
-        console.error('Error loading students:', err);
+        console.error("Error loading students:", err);
       }
     };
 
@@ -22,16 +22,16 @@ const MarkAttendance = ({ sessionId }) => {
     setPresentIds((prev) =>
       prev.includes(studentId)
         ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
+        : [...prev, studentId],
     );
   };
 
   const submitAttendance = async () => {
     try {
       await dashboardAPI.markAttendance(sessionId, presentIds);
-      alert('Attendance submitted!');
+      alert("Attendance submitted!");
     } catch (err) {
-      console.error('Error submitting attendance:', err);
+      console.error("Error submitting attendance:", err);
     }
   };
 

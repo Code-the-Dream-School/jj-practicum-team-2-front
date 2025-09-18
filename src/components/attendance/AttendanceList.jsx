@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { dashboardAPI } from '../../services/api';
+import React, { useEffect, useState } from "react";
+import { dashboardAPI } from "../../services/api";
 
 const AttendanceList = ({ sessionId }) => {
   const [students, setStudents] = useState([]);
@@ -10,7 +10,7 @@ const AttendanceList = ({ sessionId }) => {
         const data = await dashboardAPI.getSessionAttendance(sessionId);
         setStudents(data.students);
       } catch (err) {
-        console.error('Error fetching attendance:', err);
+        console.error("Error fetching attendance:", err);
       }
     };
 
@@ -23,7 +23,7 @@ const AttendanceList = ({ sessionId }) => {
       <ul>
         {students.map((student) => (
           <li key={student._id}>
-            {student.name} — {student.attended ? 'Present' : 'Absent'}
+            {student.name} — {student.attended ? "Present" : "Absent"}
           </li>
         ))}
       </ul>
