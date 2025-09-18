@@ -1,4 +1,3 @@
-
 import { useNavigate } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 
@@ -125,7 +124,9 @@ export default function StudentProfile() {
         </p>
         <button
           className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
-          onClick={() => (window.location.href = `mailto:${formData.reviewerEmail}`)}
+          onClick={() =>
+            (window.location.href = `mailto:${formData.reviewerEmail}`)
+          }
         >
           Email Reviewer
         </button>
