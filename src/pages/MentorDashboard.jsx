@@ -5,7 +5,7 @@ import Loading from "../components/common/Loading";
 import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
 import Modal from "../components/common/Modal";
 import EditSessionModal from "../components/common/EditSessionModal";
-import { AcademicCapIcon } from "@heroicons/react/24/solid";
+// import { AcademicCapIcon } from "@heroicons/react/24/solid";
 
 export default function MentorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);

@@ -94,6 +94,17 @@ export const dashboardAPI = {
     });
     return response.data;
   },
+ getSessionAttendance: async (sessionId) => {
+    const response = await api.get(`/sessions/${sessionId}/attendance`);
+    return response.data;
+  },
+
+  // ✅ GET attendance history for a student
+  getStudentAttendanceHistory: async (studentId) => {
+    const response = await api.get(`/students/${studentId}/attendance`);
+    return response.data;
+  },
+  
 };
 
 export const mainAPI = {
@@ -102,5 +113,7 @@ export const mainAPI = {
     return response.data;
   },
 };
+
+
 
 export default api;
