@@ -2,7 +2,7 @@ import { useDashboard } from "../hooks/useDashboard";
 import Loading from "../components/common/Loading";
 import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
 import WeeklyGoalIndicator from "../components/dashboard/WeeklyGoalIndicator";
-import { AcademicCapIcon } from '@heroicons/react/24/solid';
+import { AcademicCapIcon } from "@heroicons/react/24/solid";
 
 export default function StudentDashboard() {
   const {
@@ -59,7 +59,7 @@ export default function StudentDashboard() {
           weeklyGoal={dashboardData.stats.weeklyGoal || 3}
           onGoalUpdate={updateWeeklyGoal}
         />
-        
+
         <WeeklySessionsView
           sessionsData={dashboardData.thisWeek}
           myRegistrations={dashboardData.myRegistrations}

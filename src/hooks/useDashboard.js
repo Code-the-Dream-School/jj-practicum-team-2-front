@@ -25,23 +25,12 @@ export const useDashboard = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sessionFilter, setSessionFilter] = useState("all"); // "all" or "my"
-
-  // Filter sessions based on current filter setting
-  const getFilteredSessions = (sessions) => {
-    if (sessionFilter === "my") {
-      return sessions.filter(session => 
-        dashboardData.myRegistrations.includes(session._id)
-      );
-    }
-    return sessions;
-  };
 
   // Calculate weekly goal status
   const calculateWeeklyGoal = (data) => {
     const goalTarget = data.stats?.weeklyGoal || 3;
     const attendedCount = data.stats.attendedThisWeek;
-    
+
     return {
       ...data.stats,
       weeklyGoal: goalTarget,
@@ -151,7 +140,8 @@ export const useDashboard = () => {
       let errorMessage = "Failed to update weekly goal";
 
       if (err.response?.status === 400) {
-        errorMessage = err.response.data?.message || "Invalid weekly goal value";
+        errorMessage =
+          err.response.data?.message || "Invalid weekly goal value";
       } else if (err.response?.status === 401) {
         errorMessage = "Please log in to update your weekly goal";
       } else if (
