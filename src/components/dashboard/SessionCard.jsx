@@ -47,8 +47,8 @@ export default function SessionCard({
 
   // Mentor-specific actions
   const handleMarkAttendance = async () => {
-    // TODO: Implement attendance marking modal/interface
-    return { success: true, message: "Attendance marked successfully!" };
+    window.location.href = `/attendance?sessionId=${session._id}`;
+    return { success: true, message: "Redirecting to attendance page..." };
   };
 
   const handleEditSession = async () => {

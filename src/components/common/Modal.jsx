@@ -12,7 +12,7 @@ function Modal({ isOpen, onClose, onSubmit }) {
     duration: 60,
   });
 
-  // Reset form when modal is closed or set default class when modal opens
+  // Reset form when modal is closed
   useEffect(() => {
     if (!isOpen) {
       setForm({

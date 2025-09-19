@@ -5,7 +5,7 @@ import Loading from "../components/common/Loading";
 import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
 import Modal from "../components/common/Modal";
 import EditSessionModal from "../components/common/EditSessionModal";
-// import { AcademicCapIcon } from "@heroicons/react/24/solid";
+import { AcademicCapIcon } from "@heroicons/react/24/solid";
 
 export default function MentorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -27,28 +27,9 @@ export default function MentorDashboard() {
 
   const handleCreateSession = async (sessionData) => {
     try {
-      const classResponse = await fetch(
-        "http://localhost:8000/api/v1/classes",
-        {
-          credentials: "include",
-        },
-      );
-
-      let defaultClassId;
-      if (classResponse.ok) {
-        const classes = await classResponse.json();
-        defaultClassId = classes[0]?._id;
-      }
-
-      if (!defaultClassId) {
-        alert("No classes available. Please contact administrator.");
-        return;
-      }
-
       const payload = {
         title: sessionData.title,
         description: sessionData.description,
-        classId: defaultClassId,
         courseName: sessionData.courseName,
         mentorId: user.id,
         date: sessionData.date,
@@ -163,7 +144,7 @@ export default function MentorDashboard() {
         <button
           onClick={handleOpenModal}
           type="button"
-          className="btn btn-primary btn-rounded"
+          className="btn btn-primary btn-rounded mr-4"
         >
           Create a New Session
         </button>
