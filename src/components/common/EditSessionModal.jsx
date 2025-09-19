@@ -13,12 +13,10 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session }) {
     duration: 60,
   });
 
-  // Single useEffect to handle both form population and reset
   useEffect(() => {
     if (isOpen && session) {
-      // Modal opened with session data - populate form
       const sessionDate = new Date(session.date);
-      const formattedDate = sessionDate.toISOString().slice(0, 16);
+      const formattedDate = sessionDate.toISOString().slice(0, 16); // Формат для datetime-local
 
       setForm({
         title: session.title || "",
@@ -31,8 +29,11 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session }) {
         zoomLink: session.zoomLink || "",
         duration: session.duration || 60,
       });
-    } else if (!isOpen) {
-      // Modal closed - reset form
+    }
+  }, [isOpen, session]);
+
+  useEffect(() => {
+    if (!isOpen) {
       setForm({
         title: "",
         description: "",
@@ -45,7 +46,7 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session }) {
         duration: 60,
       });
     }
-  }, [isOpen, session]);
+  }, [isOpen]);
 
   const handleChange = (e) => {
     const { name, value, type } = e.target;
