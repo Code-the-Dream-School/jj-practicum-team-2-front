@@ -118,10 +118,7 @@ const Header = () => {
         <Link to={profileRoute} className={CONFIG.styles.navLink}>
           Profile
         </Link>
-        <button
-          onClick={handleLogout}
-          className={`${CONFIG.styles.button} text-sm`}
-        >
+        <button onClick={handleLogout} className="btn btn-accent">
           Logout
         </button>
       </div>

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 
-function Modal({ isOpen, onClose, onSubmit, classes = [] }) {
+function Modal({ isOpen, onClose, onSubmit }) {
   const [form, setForm] = useState({
     title: "",
     description: "",
-    classId: "",
     courseName: "",
     date: "",
     type: "lecture",
@@ -13,13 +12,12 @@ function Modal({ isOpen, onClose, onSubmit, classes = [] }) {
     duration: 60,
   });
 
-  // Reset form when modal is closed
+  // Reset form when modal is closed or set default class when modal opens
   useEffect(() => {
     if (!isOpen) {
       setForm({
         title: "",
         description: "",
-        classId: "",
         courseName: "",
         date: "",
         type: "lecture",
@@ -109,26 +107,7 @@ function Modal({ isOpen, onClose, onSubmit, classes = [] }) {
                   required
                 />
               </div>
-              <div className="col-span-2 sm:col-span-1">
-                <label className="block mb-2 text-sm font-medium text-black">
-                  Class
-                </label>
-                <select
-                  name="classId"
-                  value={form.classId}
-                  onChange={handleChange}
-                  className="bg-gray-100 border border-gray-300 text-black placeholder-gray-400 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5"
-                  required
-                >
-                  <option value="">Select class</option>
-                  {classes.map((cls) => (
-                    <option key={cls._id} value={cls._id}>
-                      {cls.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="col-span-2 sm:col-span-1">
+              <div className="col-span-2">
                 <label className="block mb-2 text-sm font-medium text-black">
                   Course Name
                 </label>

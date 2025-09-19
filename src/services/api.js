@@ -96,6 +96,13 @@ export const dashboardAPI = {
   },
 };
 
+export const classAPI = {
+  getDefaultClass: async () => {
+    const response = await api.get("/classes/default");
+    return response.data;
+  },
+};
+
 export const mainAPI = {
   getMain: async () => {
     const response = await api.get(API_ENDPOINTS.MAIN);
