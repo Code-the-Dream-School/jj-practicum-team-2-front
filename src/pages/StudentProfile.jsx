@@ -1,15 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 
-// API endpoints
 const FETCH_URL = "http://localhost:8000/api/v1/user/myProfile";
 const UPDATE_URL = "http://localhost:8000/api/v1/user";
 
-// Map backend profile to form state
 const mapToFormData = (profile) => ({
   name: `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
   email: profile.email || "",
-  avatarUrl: profile.avatarUrl || "", // string URL only
+  avatarUrl: profile.avatarUrl || "",
   bio: profile.bio || "",
   zoomLink: profile.zoomLink || "",
   reviewerName: profile.reviewerName || "Sarah Johnson",
@@ -37,23 +35,32 @@ export default function StudentProfile() {
   if (!user) return <p className="p-4">No profile found.</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
+    <div className="min-h-screen flex flex-col items-center p-4 sm:p-8">
       {/* Header */}
-      <div className="w-full max-w-4xl bg-[#1E2B3A] text-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6">
-        <div className="w-24 h-24 bg-gray-300 rounded-md flex items-center justify-center overflow-hidden">
+      <div className="app-header">
+        <div className="app-header__avatar">
           {formData.avatarUrl ? (
             <img
               src={formData.avatarUrl}
               alt="Profile"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-md"
             />
           ) : (
-            <span className="text-gray-500">📷</span>
+            <span className="text-4xl">👤</span>
           )}
         </div>
 
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">My Profile</h1>
+        <div className="app-header__content">
+          <h1 className="app-header__title">My Profile</h1>
+          <p className="app-header__subtitle">{formData.name}</p>
+          <p className="text-sm opacity-90">{formData.email}</p>
+        </div>
+      </div>
+
+      {/* Personal Info */}
+      <div className="info-card">
+        <h2 className="card-title">About Me</h2>
+        <div className="card-content">
           {isEditing ? (
             <>
               <input
@@ -61,51 +68,66 @@ export default function StudentProfile() {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="text-black p-1 rounded w-full mt-2"
+                className="w-full border border-gray-300 rounded-md p-2 mb-2"
+                placeholder="Full name"
               />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="text-black p-1 rounded w-full mt-2"
+                className="w-full border border-gray-300 rounded-md p-2 mb-2"
+                placeholder="Email"
               />
               <textarea
                 name="bio"
                 value={formData.bio}
                 onChange={handleChange}
                 placeholder="Write something about yourself..."
-                className="text-black p-2 rounded w-full mt-2 resize-none"
+                className="w-full border border-gray-300 rounded-md p-2 mb-2 resize-none"
                 rows={4}
               />
-              {/* Avatar URL input instead of file upload */}
               <input
                 type="text"
                 name="avatarUrl"
                 value={formData.avatarUrl || ""}
                 onChange={handleChange}
                 placeholder="Enter image URL"
-                className="text-black p-1 rounded w-full mt-2"
+                className="w-full border border-gray-300 rounded-md p-2"
               />
             </>
           ) : (
             <>
-              <p className="text-lg">{formData.name}</p>
-              <p className="text-sm">{formData.email}</p>
               <p className="mt-2">{formData.bio}</p>
+              {formData.avatarUrl && (
+                <p className="mt-2 text-sm text-gray-600">
+                  📷 Custom image linked
+                </p>
+              )}
             </>
           )}
         </div>
       </div>
 
       {/* Session Stats */}
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-md p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-4">Session Stats</h2>
-        <p>Total Sessions Attended: {formData.sessionsAttended}</p>
-        <p>Sessions This Week: {formData.sessionsThisWeek}</p>
-        <p>Upcoming Sessions: {formData.upcomingSessions}</p>
+      <div className="info-card">
+        <h2 className="card-title">Session Stats</h2>
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p className="text-2xl font-bold">{formData.sessionsAttended}</p>
+            <p className="text-gray-600 text-sm">Total Attended</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold">{formData.sessionsThisWeek}</p>
+            <p className="text-gray-600 text-sm">This Week</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold">{formData.upcomingSessions}</p>
+            <p className="text-gray-600 text-sm">Upcoming</p>
+          </div>
+        </div>
         <button
-          className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
+          className="btn btn-primary mt-4"
           onClick={() => navigate("/my-sessions")}
         >
           Manage Sessions
@@ -113,39 +135,32 @@ export default function StudentProfile() {
       </div>
 
       {/* Reviewer */}
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-md p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-2">Homework Reviewer</h2>
-        <p className="text-sm">
-          Contact Information:
-          <br />
-          {formData.reviewerName}
-          <br />
-          {formData.reviewerEmail}
-        </p>
-        <button
-          className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
-          onClick={() =>
-            (window.location.href = `mailto:${formData.reviewerEmail}`)
-          }
-        >
-          Email Reviewer
-        </button>
+      <div className="info-card">
+        <h2 className="card-title">Homework Reviewer</h2>
+        <div className="card-content">
+          <p>{formData.reviewerName}</p>
+          <p>{formData.reviewerEmail}</p>
+          <button
+            className="btn btn-primary mt-4"
+            onClick={() =>
+              (window.location.href = `mailto:${formData.reviewerEmail}`)
+            }
+          >
+            Email Reviewer
+          </button>
+        </div>
       </div>
-
       {/* Edit / Save Buttons */}
       <div className="mt-6 flex gap-4">
         {isEditing ? (
           <>
-            <button
-              className="px-6 py-2 bg-blue-200 hover:bg-blue-300 rounded-md"
-              onClick={handleSave}
-            >
+            <button className="btn btn-blue" onClick={handleSave}>
               Save
             </button>
             <button
-              className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+              className="btn btn-secondary"
               onClick={() => {
-                setFormData(mapToFormData(user)); // reset edits
+                setFormData(mapToFormData(user));
                 setIsEditing(false);
               }}
             >
@@ -154,7 +169,7 @@ export default function StudentProfile() {
           </>
         ) : (
           <button
-            className="px-6 py-2 bg-green-200 hover:bg-green-300 rounded-md"
+            className="btn btn-primary"
             onClick={() => setIsEditing(true)}
           >
             Edit Profile

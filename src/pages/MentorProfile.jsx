@@ -10,7 +10,7 @@ const UPDATE_URL = "http://localhost:8000/api/v1/user";
 const mapToFormData = (profile) => ({
   name: `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
   email: profile.email || "",
-  avatarUrl: profile.avatarUrl || "", // use avatarUrl consistently
+  avatarUrl: profile.avatarUrl || "",
   bio: profile.bio || "",
   zoomLink: profile.zoomLink || "",
   sessionsCreated: profile.sessionsCreated || 0,
@@ -38,10 +38,9 @@ export default function MentorProfile() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
-      {/* Header Section */}
-      <div className="w-full max-w-4xl bg-[#1E2B3A] text-white rounded-xl shadow-lg p-6 flex flex-col sm:flex-row items-center gap-6">
-        {/* Avatar */}
-        <div className="w-24 h-24 bg-gray-300 rounded-md flex items-center justify-center overflow-hidden">
+      {/* Header */}
+      <div className="app-header">
+        <div className="app-header__avatar">
           {formData.avatarUrl ? (
             <img
               src={formData.avatarUrl}
@@ -49,35 +48,29 @@ export default function MentorProfile() {
               className="w-full h-full object-cover"
             />
           ) : (
-            <span className="text-gray-500">📷</span>
+            <span className="text-gray-500 text-3xl">📷</span>
           )}
         </div>
 
-        {/* Profile Info */}
-        <div className="flex-1">
-          <h1 className="text-2xl font-bold">My Profile</h1>
+        <div className="app-header__content">
+          <h1 className="app-header__title">My Profile</h1>
+          <p className="app-header__subtitle">{formData.name}</p>
+          <p className="text-sm opacity-90">{formData.email}</p>
+        </div>
+      </div>
+
+      {/* Bio / Zoom / Image (edit section) */}
+      <div className="info-card">
+        <h2 className="card-title">About Me</h2>
+        <div className="card-content">
           {isEditing ? (
             <>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="text-black p-1 rounded w-full mt-2"
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="text-black p-1 rounded w-full mt-2"
-              />
               <textarea
                 name="bio"
                 value={formData.bio}
                 onChange={handleChange}
                 placeholder="Enter your bio"
-                className="text-black p-2 rounded w-full mt-2 h-24"
+                className="text-black p-2 rounded w-full h-24"
               />
               <input
                 type="text"
@@ -85,36 +78,36 @@ export default function MentorProfile() {
                 value={formData.zoomLink}
                 onChange={handleChange}
                 placeholder="Enter Zoom link"
-                className="text-black p-1 rounded w-full mt-2"
+                className="text-black p-2 rounded w-full mt-2"
               />
-              {/* Avatar URL input */}
               <input
                 type="text"
                 name="avatarUrl"
                 value={formData.avatarUrl || ""}
                 onChange={handleChange}
                 placeholder="Enter image URL"
-                className="text-black p-1 rounded w-full mt-2"
+                className="text-black p-2 rounded w-full mt-2"
               />
             </>
           ) : (
             <>
-              <p className="text-lg font-semibold">{formData.name}</p>
-              <p className="text-sm">{formData.email}</p>
-              {formData.bio && (
-                <p className="mt-2 text-gray-200">{formData.bio}</p>
-              )}
+              {formData.bio && <p>{formData.bio}</p>}
               {formData.zoomLink && (
-                <p className="mt-1">
-                  <span className="font-semibold">🔗 Zoom Link:</span>{" "}
+                <p className="mt-2">
+                  <span className="font-semibold">🎥 Default Zoom Link:</span>{" "}
                   <a
                     href={formData.zoomLink}
-                    className="text-blue-400 underline"
+                    className="text-accent underline"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
                     {formData.zoomLink}
                   </a>
+                </p>
+              )}
+              {formData.avatarUrl && (
+                <p className="mt-2 text-sm text-gray-600">
+                  📷 Custom image linked
                 </p>
               )}
             </>
@@ -123,32 +116,31 @@ export default function MentorProfile() {
       </div>
 
       {/* Session Stats */}
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-md p-6 mt-6">
-        <h2 className="text-lg font-semibold mb-4">Session Stats</h2>
-        <p>Total Sessions Created: {formData.sessionsCreated}</p>
-        <p>Sessions This Week: {formData.sessionsThisWeek}</p>
-        <p>Upcoming Sessions: {formData.upcomingSessions}</p>
-        <p>Average Attendance: {formData.averageAttendance}</p>
-        <button
-          className="mt-4 px-4 py-2 bg-green-200 hover:bg-green-300 text-sm rounded-md"
-          onClick={() => navigate("/manage-sessions")}
-        >
-          Manage Sessions
-        </button>
+      <div className="info-card">
+        <h2 className="card-title">Session Stats</h2>
+        <div className="card-content">
+          <p>Total Sessions Created: {formData.sessionsCreated}</p>
+          <p>Sessions This Week: {formData.sessionsThisWeek}</p>
+          <p>Upcoming Sessions: {formData.upcomingSessions}</p>
+          <p>Average Attendance: {formData.averageAttendance}</p>
+          <button
+            className="btn btn-primary"
+            onClick={() => navigate("/manage-sessions")}
+          >
+            Manage Sessions
+          </button>
+        </div>
       </div>
 
-      {/* Edit Profile Buttons */}
+      {/* Edit / Save Buttons */}
       <div className="mt-6 flex gap-4">
         {isEditing ? (
           <>
-            <button
-              className="px-6 py-2 bg-blue-200 hover:bg-blue-300 rounded-md"
-              onClick={handleSave}
-            >
+            <button className="btn btn-blue" onClick={handleSave}>
               Save
             </button>
             <button
-              className="px-6 py-2 bg-gray-200 hover:bg-gray-300 rounded-md"
+              className="btn btn-secondary"
               onClick={() => {
                 setFormData(mapToFormData(user));
                 setIsEditing(false);
@@ -159,7 +151,7 @@ export default function MentorProfile() {
           </>
         ) : (
           <button
-            className="px-6 py-2 bg-green-200 hover:bg-green-300 rounded-md"
+            className="btn btn-green"
             onClick={() => setIsEditing(true)}
           >
             Edit Profile
