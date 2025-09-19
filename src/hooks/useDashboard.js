@@ -15,6 +15,8 @@ export const useDashboard = () => {
     stats: {
       attendedThisWeek: 0,
       upcomingThisWeek: 0,
+      plannedThisWeek: 0,
+      weeklyGoalMet: false,
       totalSessions: 0, // for mentor
       totalParticipants: 0, // for mentor
       upcomingSessions: 0, // for mentor
@@ -24,114 +26,36 @@ export const useDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Calculate weekly goal status
+  const calculateWeeklyGoal = (data) => {
+    const goalTarget = data.stats?.weeklyGoal || 3;
+    const attendedCount = data.stats.attendedThisWeek;
+
+    return {
+      ...data.stats,
+      weeklyGoal: goalTarget,
+      weeklyGoalMet: attendedCount >= goalTarget,
+    };
+  };
+
   const loadDashboard = async () => {
     try {
       setLoading(true);
       setError(null);
 
-      // TEMP: Mock data for testing UI - keep commented for development
-      /* 
-      const now = new Date();
-      const mockData = {
-        thisWeek: {
-          inProgress: [
-            {
-              _id: "66f234567890abcdef123456",
-              title: "Npm and Async Patterns",
-              courseName: "Node.js Fundamentals",
-              description:
-                "Learn about npm package management and asynchronous programming patterns in Node.js",
-              mentorId: { firstName: "Sarah", lastName: "Johnson" },
-              date: new Date(now.getTime() - 30 * 60 * 1000), // Started 30 minutes ago
-              participants: [{ _id: "user1" }],
-              capacity: 20,
-              zoomLink: "https://zoom.us/meeting1",
-              status: "ongoing",
-            },
-          ],
-          upcoming: [
-            {
-              _id: "66f234567890abcdef123457",
-              title: "React Component Patterns",
-              courseName: "React Advanced",
-              description:
-                "Deep dive into advanced React component patterns and best practices",
-              mentorId: { firstName: "Mike", lastName: "Davis" },
-              date: new Date(now.getTime() + 2 * 60 * 60 * 1000), // In 2 hours
-              participants: [],
-              capacity: 25,
-              status: "scheduled",
-            },
-            {
-              _id: "66f234567890abcdef123459",
-              title: "CSS Grid and Flexbox",
-              courseName: "CSS Mastery",
-              description: "Master modern CSS layout techniques",
-              mentorId: { firstName: "Emma", lastName: "Wilson" },
-              date: new Date(now.getTime() + 24 * 60 * 60 * 1000), // Tomorrow
-              participants: [],
-              capacity: 15,
-              status: "scheduled",
-            },
-          ],
-          past: [
-            {
-              _id: "66f234567890abcdef123458",
-              title: "Introduction to JavaScript",
-              courseName: "JavaScript Basics",
-              description:
-                "Fundamental concepts of JavaScript programming language",
-              mentorId: { firstName: "Anna", lastName: "Smith" },
-              date: new Date(now.getTime() - 2 * 24 * 60 * 60 * 1000), // 2 days ago
-              participants: [{ _id: "user1" }],
-              capacity: 30,
-              recordingUrl: "https://zoom.us/recording1",
-              status: "completed",
-              attended: true,
-            },
-            {
-              _id: "66f234567890abcdef123460",
-              title: "Git Version Control",
-              courseName: "Development Tools",
-              description: "Learn essential Git commands and workflows",
-              mentorId: { firstName: "John", lastName: "Brown" },
-              date: new Date(now.getTime() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
-              participants: [{ _id: "user1" }],
-              capacity: 20,
-              recordingUrl: "https://zoom.us/recording2",
-              status: "completed",
-              attended: false,
-            },
-          ],
-        },
-        myRegistrations: [
-          "66f234567890abcdef123456",
-          "66f234567890abcdef123457",
-          "66f234567890abcdef123458",
-          "66f234567890abcdef123460",
-        ],
-        stats: {
-          attendedThisWeek: 1,
-          upcomingThisWeek: 3,
-        },
-      };
-
-      // Calculate enhanced stats with weekly goal
-      const enhancedData = {
-        ...mockData,
-        stats: calculateWeeklyGoal(mockData),
-      };
-
-      setDashboardData(enhancedData);
-      */
-
       // Use appropriate API based on user role
-      const data = isMentor()
-        ? await dashboardAPI.getMentorDashboard()
-        : await dashboardAPI.getStudentDashboard();
-
-      console.log("Dashboard data loaded:", data);
-      setDashboardData(data);
+      if (isMentor()) {
+        const data = await dashboardAPI.getMentorDashboard();
+        console.log("Mentor dashboard data loaded:", data);
+        setDashboardData(data);
+      } else {
+        const data = await dashboardAPI.getStudentDashboard();
+        console.log("Student dashboard data loaded:", data);
+        setDashboardData({
+          ...data,
+          stats: calculateWeeklyGoal(data),
+        });
+      }
     } catch (err) {
       console.error("Dashboard load error:", err);
       setError(err.response?.data?.message || "Failed to load dashboard");
@@ -198,6 +122,7 @@ export const useDashboard = () => {
     try {
       await dashboardAPI.updateWeeklyGoal(newGoal);
 
+      // Update local state
       setDashboardData((prev) => ({
         ...prev,
         stats: {
@@ -211,6 +136,7 @@ export const useDashboard = () => {
     } catch (err) {
       console.error("Weekly goal update error:", err);
 
+      // Extract the actual error message from the response
       let errorMessage = "Failed to update weekly goal";
 
       if (err.response?.status === 400) {
@@ -222,6 +148,7 @@ export const useDashboard = () => {
         err.message &&
         !err.message.includes("Failed to update weekly goal")
       ) {
+        // Avoid circular error messages
         errorMessage = err.message;
       }
 

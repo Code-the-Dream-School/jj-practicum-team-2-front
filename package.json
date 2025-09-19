@@ -12,7 +12,8 @@
     "prettier": "prettier . --check",
     "prettier:fix": "prettier . --write",
     "format": "npm run lint:fix && npm run prettier:fix",
-    "prepare": "husky"
+    "prepare": "husky",
+    "test-backend-integration": "node ../test-backend-integration.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
