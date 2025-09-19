@@ -33,7 +33,7 @@ export default function WeeklyGoalIndicator({
     messageTimeoutRef.current = setTimeout(() => {
       setErrorMessage("");
       setSuccessMessage("");
-      messageTimeoutRef.current = null; 
+      messageTimeoutRef.current = null;
     }, 3000);
   };
 
@@ -48,7 +48,7 @@ export default function WeeklyGoalIndicator({
   const handleGoalClick = () => {
     setTempGoal(weeklyGoal);
     setIsEditing(true);
-    setErrorMessage(""); 
+    setErrorMessage("");
     setSuccessMessage("");
   };
 
@@ -95,7 +95,6 @@ export default function WeeklyGoalIndicator({
       setErrorMessage(`Unable to update weekly goal: ${serverError}`);
       setTempGoal(weeklyGoal);
       clearMessages();
-
     } finally {
       setIsLoading(false);
     }
@@ -124,7 +123,7 @@ export default function WeeklyGoalIndicator({
 
     const numValue = parseInt(value);
     if (isNaN(numValue)) {
-      return; 
+      return;
     }
 
     if (numValue >= 0 && numValue <= 99) {
