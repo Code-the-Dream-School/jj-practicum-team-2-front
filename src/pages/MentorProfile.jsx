@@ -150,10 +150,7 @@ export default function MentorProfile() {
             </button>
           </>
         ) : (
-          <button
-            className="btn btn-green"
-            onClick={() => setIsEditing(true)}
-          >
+          <button className="btn btn-green" onClick={() => setIsEditing(true)}>
             Edit Profile
           </button>
         )}
