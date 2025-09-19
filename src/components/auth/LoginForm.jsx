@@ -19,13 +19,13 @@ const LoginForm = () => {
   const validate = (val) => {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    
+
     if (!val.email) {
       errors.email = "Email is required!";
     } else if (!regex.test(val.email)) {
       errors.email = "Please enter a valid email address";
     }
-    
+
     if (!val.password) {
       errors.password = "Password is required!";
     } else if (val.password.length < 6) {
@@ -33,7 +33,7 @@ const LoginForm = () => {
     } else if (val.password.length > 20) {
       errors.password = "Password cannot exceed 20 characters";
     }
-    
+
     return errors;
   };
 

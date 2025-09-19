@@ -37,25 +37,25 @@ const RegisterForm = () => {
   const validate = (val) => {
     const errors = {};
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    
+
     if (!val.firstName) {
       errors.firstName = "First name is required!";
     } else if (!/^[a-zA-Z\s]+$/.test(val.firstName)) {
       errors.firstName = "First name can only contain letters and spaces!";
     }
-    
+
     if (!val.lastName) {
       errors.lastName = "Last name is required!";
     } else if (!/^[a-zA-Z\s]+$/.test(val.lastName)) {
       errors.lastName = "Last name can only contain letters and spaces!";
     }
-    
+
     if (!val.email) {
       errors.email = "Email is required!";
     } else if (!regex.test(val.email)) {
       errors.email = "Please enter a valid email address";
     }
-    
+
     if (!val.password) {
       errors.password = "Password is required!";
     } else if (val.password.length < 6) {
@@ -63,13 +63,13 @@ const RegisterForm = () => {
     } else if (val.password.length > 20) {
       errors.password = "Password cannot exceed 20 characters";
     }
-    
+
     if (!val.confirmPassword) {
       errors.confirmPassword = "Please confirm your password!";
     } else if (val.password !== val.confirmPassword) {
       errors.confirmPassword = "Passwords do not match!";
     }
-    
+
     return errors;
   };
 

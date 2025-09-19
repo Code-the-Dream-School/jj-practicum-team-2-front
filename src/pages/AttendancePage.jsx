@@ -8,7 +8,7 @@ import AttendanceStatus from "../components/attendance/AttendanceStatus";
 export default function AttendancePage() {
   const { user } = useAuth();
   const [searchParams] = useSearchParams();
-  const sessionId = searchParams.get('sessionId');
+  const sessionId = searchParams.get("sessionId");
   const [activeTab, setActiveTab] = useState("mark");
 
   // Set initial tab based on user role and sessionId
@@ -25,13 +25,14 @@ export default function AttendancePage() {
   const tabs = [
     { id: "mark", label: "Mark Attendance", role: "mentor" },
     { id: "view", label: "View Attendance", role: "both" },
-    { id: "status", label: "My Attendance", role: "student" }
+    { id: "status", label: "My Attendance", role: "student" },
   ];
 
-  const visibleTabs = tabs.filter(tab => 
-    tab.role === "both" || 
-    (tab.role === "mentor" && user?.role === "mentor") ||
-    (tab.role === "student" && user?.role === "student")
+  const visibleTabs = tabs.filter(
+    (tab) =>
+      tab.role === "both" ||
+      (tab.role === "mentor" && user?.role === "mentor") ||
+      (tab.role === "student" && user?.role === "student"),
   );
 
   return (
@@ -69,15 +70,13 @@ export default function AttendancePage() {
         {activeTab === "mark" && user?.role === "mentor" && (
           <MarkAttendance sessionId={sessionId} />
         )}
-        
-        {activeTab === "view" && (
-          <AttendanceList sessionId={sessionId} />
-        )}
-        
+
+        {activeTab === "view" && <AttendanceList sessionId={sessionId} />}
+
         {activeTab === "status" && user?.role === "student" && (
           <AttendanceStatus />
         )}
-        
+
         {!sessionId && activeTab !== "status" && (
           <div className="p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
             <p className="text-yellow-700">

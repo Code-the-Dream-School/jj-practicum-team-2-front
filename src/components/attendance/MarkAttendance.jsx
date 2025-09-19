@@ -7,11 +7,11 @@ const MarkAttendance = ({ sessionId }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     if (!sessionId) {
-      setError('Session ID is required');
+      setError("Session ID is required");
       setLoading(false);
       return;
     }
@@ -21,20 +21,20 @@ const MarkAttendance = ({ sessionId }) => {
         setLoading(true);
         setError(null);
         const data = await dashboardAPI.getSessionAttendance(sessionId);
-        
+
         if (data.attendanceData && Array.isArray(data.attendanceData)) {
           setAttendanceData(data.attendanceData);
           // Pre-populate with already marked attendance
           const alreadyPresent = data.attendanceData
-            .filter(student => student.isPresent)
-            .map(student => student.id);
+            .filter((student) => student.isPresent)
+            .map((student) => student.id);
           setPresentIds(alreadyPresent);
         } else {
-          setError('Invalid attendance data received');
+          setError("Invalid attendance data received");
         }
       } catch (err) {
         console.error("Error loading attendance data:", err);
-        setError(err.message || 'Failed to load attendance data');
+        setError(err.message || "Failed to load attendance data");
       } finally {
         setLoading(false);
       }
@@ -45,43 +45,49 @@ const MarkAttendance = ({ sessionId }) => {
 
   const handleCheckboxChange = (studentId) => {
     if (!studentId) return;
-    
+
     setPresentIds((prev) =>
       prev.includes(studentId)
         ? prev.filter((id) => id !== studentId)
-        : [...prev, studentId]
+        : [...prev, studentId],
     );
   };
 
   const submitAttendance = async () => {
     if (!sessionId) {
-      setError('Session ID is missing');
+      setError("Session ID is missing");
       return;
     }
 
     try {
       setSubmitting(true);
       setError(null);
-      setSuccessMessage('');
-      
+      setSuccessMessage("");
+
       // Validate that presentIds are valid
-      const validIds = presentIds.filter(id => 
-        attendanceData.some(student => student.id === id)
+      const validIds = presentIds.filter((id) =>
+        attendanceData.some((student) => student.id === id),
       );
-      
+
       if (validIds.length !== presentIds.length) {
-        setError('Some selected students are invalid');
+        setError("Some selected students are invalid");
         return;
       }
 
       await dashboardAPI.markAttendance(sessionId, validIds);
-      setSuccessMessage(`Attendance submitted successfully! ${validIds.length} students marked present.`);
-      
+      setSuccessMessage(
+        `Attendance submitted successfully! ${validIds.length} students marked present.`,
+      );
+
       // Clear success message after 3 seconds
-      setTimeout(() => setSuccessMessage(''), 3000);
+      setTimeout(() => setSuccessMessage(""), 3000);
     } catch (err) {
       console.error("Error submitting attendance:", err);
-      setError(err.response?.data?.message || err.message || 'Failed to submit attendance');
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Failed to submit attendance",
+      );
     } finally {
       setSubmitting(false);
     }
@@ -115,7 +121,7 @@ const MarkAttendance = ({ sessionId }) => {
   return (
     <div className="p-4">
       <h3 className="text-lg font-semibold mb-4">Mark Attendance</h3>
-      
+
       {successMessage && (
         <div className="mb-4 p-3 bg-green-50 border border-green-200 rounded-lg">
           <p className="text-green-600">{successMessage}</p>
@@ -124,7 +130,10 @@ const MarkAttendance = ({ sessionId }) => {
 
       <div className="space-y-2 mb-4">
         {attendanceData.map((student) => (
-          <div key={student.id} className="flex items-center p-2 hover:bg-gray-50 rounded">
+          <div
+            key={student.id}
+            className="flex items-center p-2 hover:bg-gray-50 rounded"
+          >
             <label className="flex items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -148,13 +157,13 @@ const MarkAttendance = ({ sessionId }) => {
         <p className="text-sm text-gray-600">
           {presentIds.length} of {attendanceData.length} students marked present
         </p>
-        
+
         <button
           onClick={submitAttendance}
           disabled={submitting}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          {submitting ? 'Submitting...' : 'Submit Attendance'}
+          {submitting ? "Submitting..." : "Submit Attendance"}
         </button>
       </div>
     </div>
