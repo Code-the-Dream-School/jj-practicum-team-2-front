@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-function Modal({ isOpen, onClose, onSubmit, classes = [] }) {
+function Modal({ isOpen, onClose, onSubmit }) {
   const [form, setForm] = useState({
     title: "",
     description: "",
