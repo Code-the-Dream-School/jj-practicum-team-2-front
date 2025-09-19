@@ -1,5 +1,5 @@
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
@@ -17,36 +17,47 @@ export default function WeeklyGoalIndicator({
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
 
+  const messageTimeoutRef = useRef(null);
+
   const progressPercentage = Math.min(
     (attendedSessions / weeklyGoal) * 100,
     100,
   );
   const goalMet = attendedSessions >= weeklyGoal;
 
-  // Clear messages after timeout
   const clearMessages = () => {
-    setTimeout(() => {
+    if (messageTimeoutRef.current) {
+      clearTimeout(messageTimeoutRef.current);
+    }
+
+    messageTimeoutRef.current = setTimeout(() => {
       setErrorMessage("");
       setSuccessMessage("");
+      messageTimeoutRef.current = null; 
     }, 3000);
   };
+
+  useEffect(() => {
+    return () => {
+      if (messageTimeoutRef.current) {
+        clearTimeout(messageTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleGoalClick = () => {
     setTempGoal(weeklyGoal);
     setIsEditing(true);
-    setErrorMessage(""); // Clear any existing errors
+    setErrorMessage(""); 
     setSuccessMessage("");
   };
 
   const handleSave = async () => {
-    // Convert to number and validate
     const goalValue = parseInt(tempGoal);
 
-    // Clear previous messages
     setErrorMessage("");
     setSuccessMessage("");
 
-    // Validate input with better error messages
     if (isNaN(goalValue) || tempGoal === "") {
       setErrorMessage("Please enter a valid number for your weekly goal.");
       setTempGoal(weeklyGoal);
@@ -74,16 +85,17 @@ export default function WeeklyGoalIndicator({
         await onGoalUpdate(goalValue);
         setSuccessMessage("Weekly goal updated successfully!");
         clearMessages();
+
+        setIsEditing(false);
       }
-      setIsEditing(false);
     } catch (error) {
       console.error("Failed to update goal:", error);
 
-      // Show the actual error message from the server
       const serverError = error.message || "Failed to update weekly goal";
       setErrorMessage(`Unable to update weekly goal: ${serverError}`);
-      setTempGoal(weeklyGoal); // Reset to current value on error
+      setTempGoal(weeklyGoal);
       clearMessages();
+
     } finally {
       setIsLoading(false);
     }
@@ -105,22 +117,17 @@ export default function WeeklyGoalIndicator({
   const handleInputChange = (e) => {
     const value = e.target.value;
 
-    // Allow empty input for editing
     if (value === "") {
       setTempGoal("");
       return;
     }
 
-    // Only allow numbers
     const numValue = parseInt(value);
     if (isNaN(numValue)) {
-      return; // Don't update if not a number
+      return; 
     }
 
-    // Allow typing but don't restrict range during input (validate on save)
-    // This allows user to type "1" before typing "0" for "10"
     if (numValue >= 0 && numValue <= 99) {
-      // Reasonable upper limit for typing
       setTempGoal(numValue);
     }
   };
@@ -174,7 +181,7 @@ export default function WeeklyGoalIndicator({
           </p>
         </div>
 
-        {/* Session Counts - Идеально выровненные */}
+        {/* Session Counts */}
         <div className="flex gap-8">
           {/* Attended Column */}
           <div className="flex flex-col items-center min-w-[80px]">

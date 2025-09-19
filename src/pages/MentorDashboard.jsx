@@ -11,7 +11,6 @@ export default function MentorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [sessionToEdit, setSessionToEdit] = useState(null);
-  const [sessions, setSessions] = useState([]);
   const { user } = useAuth();
 
   const {
@@ -20,14 +19,13 @@ export default function MentorDashboard() {
     error,
     registerForSession,
     unregisterFromSession,
-    refreshDashboard, // Add refresh function from hook
+    refreshDashboard,
   } = useDashboard();
 
   const handleOpenModal = () => setIsModalOpen(true);
   const handleCloseModal = () => setIsModalOpen(false);
 
   const handleCreateSession = async (sessionData) => {
-    // First, get the default class ID
     try {
       const classResponse = await fetch(
         "http://localhost:8000/api/v1/classes",
@@ -75,18 +73,8 @@ export default function MentorDashboard() {
         return;
       }
 
-      const newSession = await response.json();
-      setSessions((prev) => [
-        ...prev,
-        {
-          ...newSession,
-          createdBy: `${user.firstName || ""} ${user.lastName || ""}`.trim(),
-        },
-      ]);
-
       alert("Session created successfully!");
       setIsModalOpen(false);
-      // Refresh dashboard data instead of page reload
       refreshDashboard();
     } catch (err) {
       console.error("Create session error:", err);
@@ -117,7 +105,6 @@ export default function MentorDashboard() {
       alert("Session updated successfully!");
       setIsEditModalOpen(false);
       setSessionToEdit(null);
-      // Refresh dashboard data instead of page reload
       refreshDashboard();
     } catch (err) {
       console.error("Edit session error:", err);
@@ -155,7 +142,7 @@ export default function MentorDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
-      {/* Header Section - using shared styles */}
+      {/* Header Section */}
       <div className="app-header">
         <div className="app-header__avatar">
           <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -180,23 +167,6 @@ export default function MentorDashboard() {
         >
           Create a New Session
         </button>
-        <Modal
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onSubmit={handleCreateSession}
-        />
-        <ul>
-          {sessions.map((session, idx) => (
-            <li key={idx}>
-              <strong>{session.title}</strong> <br />
-              {session.date} | {session.type} | {session.duration} min <br />
-              {session.description}
-              <span className="text-xs text-gray-500">
-                Created by: {session.createdBy}
-              </span>
-            </li>
-          ))}
-        </ul>
       </div>
 
       {/* Modals */}
@@ -221,7 +191,7 @@ export default function MentorDashboard() {
           onRegister={registerForSession}
           onUnregister={unregisterFromSession}
           onEditSession={openEditModal}
-          onSessionUpdate={refreshDashboard} // Pass refresh function to child
+          onSessionUpdate={refreshDashboard}
         />
       </div>
     </div>
