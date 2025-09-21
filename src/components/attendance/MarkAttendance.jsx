@@ -11,7 +11,7 @@ const MarkAttendance = ({ sessionId }) => {
 
   useEffect(() => {
     if (!sessionId) {
-      setError("Session ID is required");
+      setError(null); // Don't show error, let parent handle empty state
       setLoading(false);
       return;
     }
@@ -140,7 +140,7 @@ const MarkAttendance = ({ sessionId }) => {
                 checked={presentIds.includes(student.id)}
                 onChange={() => handleCheckboxChange(student.id)}
                 disabled={submitting}
-                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                className="mr-3 h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300 rounded"
               />
               <span className="text-sm font-medium text-gray-900">
                 {student.name}
@@ -161,7 +161,7 @@ const MarkAttendance = ({ sessionId }) => {
         <button
           onClick={submitAttendance}
           disabled={submitting}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="btn btn-success"
         >
           {submitting ? "Submitting..." : "Submit Attendance"}
         </button>

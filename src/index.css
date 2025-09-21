@@ -21,77 +21,140 @@ body {
   background-color: #f9fafb;
 }
 
-/* Base button styles */
+/* Enhanced Button System - Dashboard Style */
 .btn {
-  padding: var(--btn-padding);
-  border-radius: var(--btn-radius);
-  font-weight: var(--btn-font-weight);
+  padding: 0.75rem 1.5rem; 
+  border-radius: 0.5rem;
+  font-weight: 600; 
   border: none;
   cursor: pointer;
-  transition: var(--transition);
+  transition: all 0.2s ease;
   font-size: 0.875rem;
-  display: inline-block;
+  display: inline-flex; 
+  align-items: center;
+  justify-content: center;
   text-align: center;
   text-decoration: none;
+  gap: 0.5rem; 
+  white-space: nowrap;
+  min-height: 2.75rem; 
 }
 
-/* Button variants */
-.btn-primary {
+/* Success/Primary Actions*/
+.btn-success, .btn-primary {
   background-color: var(--success-color);
   color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.btn-primary:hover {
+.btn-success:hover, .btn-primary:hover {
   background-color: #059669;
   transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+.btn-success:disabled, .btn-primary:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Primary Navigation */
+.btn-primary-nav {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.btn-primary-nav:hover {
+  background-color: #1e3a8a;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Secondary Actions  */
 .btn-secondary {
-  background-color: #6b7280 !important;
-  color: white !important;
-  border: 1px solid #6b7280 !important;
+  background-color: #6b7280;
+  color: white;
+  border: 1px solid #6b7280;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-secondary:hover {
-  background-color: #4b5563 !important;
-  color: white !important;
+  background-color: #4b5563;
+  border-color: #4b5563;
   transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Warning Actions */
 .btn-warning {
   background-color: var(--warning-color);
   color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-warning:hover {
   background-color: #d97706;
   transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Danger Actions*/
 .btn-danger {
   background-color: var(--error-color);
   color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-danger:hover {
   background-color: #dc2626;
   transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
+/* Accent Actions*/
 .btn-accent {
   background-color: var(--accent-color);
   color: white;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-accent:hover {
   background-color: #e04e2a;
   transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Button modifiers */
-.btn-rounded {
-  border-radius: 2rem;
-  padding: 0.75rem 1.5rem;
+/* Outline variants */
+.btn-outline {
+  background-color: transparent;
+  border: 1px solid currentColor;
+  color: var(--gray-700);
+}
+
+.btn-outline:hover {
+  background-color: var(--gray-200);
+  transform: translateY(-1px);
+}
+
+/* Size variants */
+.btn-sm {
+  padding: 0.5rem 1rem;
+  font-size: 0.75rem;
+  min-height: 2.25rem;
+}
+
+.btn-lg {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  min-height: 3.25rem;
+}
+
+/* Full width */
+.btn-full {
+  width: 100%;
 }
 
 /* Card content specific styles */
