@@ -181,19 +181,19 @@ export default function WeeklyGoalIndicator({
         </div>
 
         {/* Session Counts */}
-        <div className="flex gap-8">
+        <div className="flex gap-6 sm:gap-8">
           {/* Attended Column */}
-          <div className="flex flex-col items-center min-w-[80px]">
-            <div className="text-3xl font-bold text-blue-600 leading-none">
+          <div className="flex flex-col items-center justify-center min-w-[90px]">
+            <div className="text-3xl font-bold text-blue-600 leading-none mb-1 text-center w-full">
               {attendedSessions}
             </div>
-            <div className="text-sm text-gray-500 uppercase tracking-wide mt-1">
+            <div className="text-xs text-gray-500 uppercase tracking-wider font-medium text-center">
               Attended
             </div>
           </div>
 
           {/* Goal Column */}
-          <div className="flex flex-col items-center min-w-[80px] relative">
+          <div className="flex flex-col items-center justify-center min-w-[90px] relative">
             {/* Edit Mode Popup */}
             {isEditing && (
               <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-lg p-3 shadow-lg z-10 -mt-2">
@@ -229,16 +229,16 @@ export default function WeeklyGoalIndicator({
 
             {/* Goal Display */}
             <div
-              className="cursor-pointer hover:bg-gray-50 rounded p-1 transition-colors flex flex-col items-center"
+              className="cursor-pointer hover:bg-gray-50 rounded p-1 transition-colors flex flex-col items-center justify-center w-full"
               onClick={handleGoalClick}
               title="Click to edit weekly goal"
             >
-              <div className="text-3xl font-bold text-green-600 leading-none">
+              <div className="text-3xl font-bold text-green-600 leading-none mb-1 text-center w-full">
                 {weeklyGoal}
               </div>
-              <div className="text-sm text-gray-500 uppercase tracking-wide mt-1 flex items-center gap-1">
+              <div className="text-xs text-gray-500 uppercase tracking-wider font-medium text-center flex items-center justify-center gap-1">
                 Goal
-                <PencilIcon className="w-4 h-4 text-gray-400" />
+                <PencilIcon className="w-3 h-3 text-gray-400" />
               </div>
             </div>
           </div>
