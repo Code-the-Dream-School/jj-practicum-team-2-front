@@ -123,19 +123,18 @@ export default function MentorDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
-      {/* Header Section */}
+      {/* Header Section - using shared styles */}
       <div className="app-header">
         <div className="app-header__avatar">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <AcademicCapIcon className="w-8 h-8 text-blue-600" />
+          <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent-color)' }}>
+            <AcademicCapIcon className="w-8 h-8 text-white" />
           </div>
         </div>
 
-        <div className="app-header__content text-center">
+        <div className="app-header__content">
           <h1 className="app-header__title">This Week&apos;s Sessions</h1>
           <p className="app-header__description">
-            All your mentorship sessions in one place, Never miss a sessions
-            again
+            All your mentorship sessions in one place, Never miss a sessions again
           </p>
         </div>
       </div>

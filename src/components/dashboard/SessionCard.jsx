@@ -144,6 +144,15 @@ export default function SessionCard({
   };
 
   const getStatusIcon = () => {
+    // Check if session is canceled
+    if (session.status === 'canceled') {
+      return (
+        <div className="w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
+          <div className="text-white text-xs font-bold">✕</div>
+        </div>
+      );
+    }
+
     switch (statusType) {
       case "inProgress":
         return (
@@ -171,6 +180,18 @@ export default function SessionCard({
   };
 
   const getActionButton = () => {
+    // If session is canceled, show appropriate message and no action buttons
+    if (session.status === 'canceled') {
+      return (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-center">
+          <p className="text-red-600 font-medium">This session has been canceled</p>
+          <p className="text-red-500 text-sm mt-1">
+            {isMentor() ? "You canceled this session" : "The mentor canceled this session"}
+          </p>
+        </div>
+      );
+    }
+
     if (isMentor()) {
       switch (statusType) {
         case "inProgress":
