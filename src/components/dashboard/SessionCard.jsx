@@ -58,30 +58,29 @@ export default function SessionCard({
     return { success: true, message: "Opening edit modal..." };
   };
 
-  const handleStartSession = async () => {
-    // TODO: Implement start session functionality
-    if (session.zoomLink) {
-      window.open(session.zoomLink, "_blank");
-      return { success: true, message: "Session started!" };
-    }
-    return { success: false, message: "No Zoom link available" };
-  };
+  // New status management functions
+  const handleUpdateStatus = async (newStatus, actionName) => {
+    const confirmMessages = {
+      ongoing: `Start "${session.title}" session now?`,
+      completed: `Mark "${session.title}" as completed?`,
+      canceled: `Cancel "${session.title}" session?`,
+    };
 
-  const handleCancelSession = async () => {
-    const confirmed = window.confirm(
-      `Are you sure you want to cancel "${session.title}"?\n\nThis will notify all ${session.participants?.length || 0} registered participants.`,
-    );
-
+    const confirmed = window.confirm(confirmMessages[newStatus]);
     if (!confirmed) {
-      return { success: false, message: "Cancellation aborted" };
+      return { success: false, message: "Action cancelled" };
     }
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/sessions/${session._id}/cancel`,
+        `http://localhost:8000/api/v1/sessions/${session._id}/status`,
         {
           method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
           credentials: "include",
+          body: JSON.stringify({ status: newStatus }),
         },
       );
 
@@ -89,25 +88,59 @@ export default function SessionCard({
         const errorData = await response.json();
         return {
           success: false,
-          message: errorData.message || "Failed to cancel session",
+          message: errorData.message || `Failed to ${actionName.toLowerCase()}`,
         };
       }
 
-      // Call parent component to refresh data instead of page reload
+      // Call parent component to refresh data
       if (onSessionUpdate) {
         setTimeout(() => {
           onSessionUpdate();
-        }, 1500);
+        }, 1000);
       }
 
-      return { success: true, message: "Session canceled successfully!" };
+      const successMessage = `Session ${actionName.toLowerCase()} successfully!`;
+
+      // If completed, redirect to attendance page after short delay
+      if (newStatus === "completed") {
+        setTimeout(() => {
+          window.location.href = `/attendance?sessionId=${session._id}`;
+        }, 2000);
+        return {
+          success: true,
+          message: `${successMessage} Redirecting to attendance...`,
+        };
+      }
+
+      return { success: true, message: successMessage };
     } catch (error) {
-      console.error("Cancel session error:", error);
+      console.error(`${actionName} session error:`, error);
       return {
         success: false,
-        message: "Failed to cancel session. Please try again.",
+        message: `Failed to ${actionName.toLowerCase()}. Please try again.`,
       };
     }
+  };
+
+  const handleStartSession = async () => {
+    return handleUpdateStatus("ongoing", "Start");
+  };
+
+  const handleEndSession = async () => {
+    return handleUpdateStatus("completed", "Complete");
+  };
+
+  const handleCancelSession = async () => {
+    return handleUpdateStatus("canceled", "Cancel");
+  };
+
+  // Legacy function for Zoom link opening
+  const handleJoinSession = async () => {
+    if (session.zoomLink) {
+      window.open(session.zoomLink, "_blank");
+      return { success: true, message: "Opening Zoom session..." };
+    }
+    return { success: false, message: "No Zoom link available" };
   };
 
   const getStatusIcon = () => {
@@ -142,13 +175,22 @@ export default function SessionCard({
       switch (statusType) {
         case "inProgress":
           return (
-            <button
-              onClick={() => window.open(session.zoomLink, "_blank")}
-              disabled={!session.zoomLink}
-              className="btn btn-primary btn-rounded"
-            >
-              {session.zoomLink ? "Join Session" : "No Link Available"}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={() => handleAction(handleJoinSession)}
+                disabled={!session.zoomLink || isLoading}
+                className="btn btn-primary btn-rounded"
+              >
+                {session.zoomLink ? "Join Session" : "No Link Available"}
+              </button>
+              <button
+                onClick={() => handleAction(handleEndSession)}
+                disabled={isLoading}
+                className="btn btn-primary btn-rounded"
+              >
+                {isLoading ? "Ending..." : "End Session"}
+              </button>
+            </div>
           );
         case "upcoming":
           return (
@@ -156,7 +198,7 @@ export default function SessionCard({
               <button
                 onClick={() => handleAction(handleStartSession)}
                 disabled={isLoading}
-                className="btn btn-warning btn-rounded"
+                className="btn btn-primary btn-rounded"
               >
                 {isLoading ? "Starting..." : "Start Session"}
               </button>
