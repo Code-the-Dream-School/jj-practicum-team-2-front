@@ -134,6 +134,65 @@ body {
   background-color: #059669 !important;
 }
 
+/* Dropdown select styling */
+#session-select {
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#session-select option {
+  text-align: center !important;
+}
+
+/* Center the dropdown menu itself */
+#session-select:focus {
+  position: relative;
+}
+
+/* For webkit browsers (Chrome, Safari) */
+#session-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+#session-select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+#session-select::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 4px;
+}
+
+/* Alternative approach - custom dropdown styling */
+.session-select-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.session-select-wrapper select {
+  transform-origin: center;
+  margin: 0 auto;
+}
+
+/* Try to center the dropdown options */
+.session-select-wrapper select:focus,
+.session-select-wrapper select:active {
+  transform: translateX(0);
+}
+
+/* For better cross-browser dropdown positioning */
+.session-select-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
 .app-header {
   background-color: var(--primary-color);
   color: white;

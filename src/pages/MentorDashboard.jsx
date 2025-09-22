@@ -139,7 +139,7 @@ export default function MentorDashboard() {
           <p className="app-header__description">
             All your mentorship sessions in one place.
             <br />
-            Never miss a sessions again!
+            Never miss your sessions!
           </p>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import MarkAttendance from "../components/attendance/MarkAttendance";
@@ -16,6 +16,22 @@ export default function AttendancePage() {
   const [selectedSession, setSelectedSession] = useState(sessionId || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   // Fetch mentor's sessions for attendance
   const fetchMentorSessions = async () => {
@@ -128,37 +144,9 @@ export default function AttendancePage() {
 
   // Render content based on selected tab and session
   const renderTabContent = () => {
-    // If no session selected for mark/view tabs, show selection prompt
+    // If no session selected for mark/view tabs, show nothing or minimal content
     if ((activeTab === "mark" || activeTab === "view") && !selectedSession) {
-      return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <svg
-                className="w-8 h-8 text-green-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Ready to manage attendance
-            </h3>
-            <p className="text-gray-600 max-w-sm mx-auto">
-              {activeTab === "mark"
-                ? "Select a session above to start marking attendance for your students."
-                : "Choose a session above to view detailed attendance records."}
-            </p>
-          </div>
-        </div>
-      );
+      return null; // Simply return nothing instead of showing the message
     }
 
     switch (activeTab) {
@@ -219,22 +207,17 @@ export default function AttendancePage() {
         {/* Session Selector Card for Mentors */}
         {user?.role === "mentor" && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4 text-center">
               Select Session
             </h3>
-            <div className="relative">
-              <select
-                id="session-select"
-                value={selectedSession}
-                onChange={(e) => handleSessionChange(e.target.value)}
-                className="w-full px-4 py-3 text-base bg-white rounded-lg focus:outline-none text-gray-900 appearance-none cursor-pointer transition-all duration-200"
+            <div className="relative max-w-md mx-auto" ref={dropdownRef}>
+              {/* Custom Dropdown Button */}
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="w-full px-4 py-3 text-base bg-white rounded-lg focus:outline-none text-gray-900 cursor-pointer transition-all duration-200 text-left"
                 style={{
                   border: "2px solid #10B981",
-                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2310B981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: "right 1rem center",
-                  backgroundRepeat: "no-repeat",
-                  backgroundSize: "1em 1em",
-                  paddingRight: "2.75rem",
                 }}
                 onFocus={(e) => {
                   e.target.style.boxShadow =
@@ -244,26 +227,67 @@ export default function AttendancePage() {
                   e.target.style.boxShadow = "none";
                 }}
               >
-                <option value="" disabled>
-                  Choose a session to manage attendance...
-                </option>
-                {availableSessions.map((session) => (
-                  <option key={session._id} value={session._id}>
-                    {formatSessionOption(session)}
-                  </option>
-                ))}
-              </select>
+                <div className="flex items-center justify-between">
+                  <span className="text-center flex-1">
+                    {selectedSession
+                      ? formatSessionOption(
+                          availableSessions.find(
+                            (s) => s._id === selectedSession,
+                          ),
+                        )
+                      : "Choose a session to manage attendance..."}
+                  </span>
+                  <svg
+                    className={`w-5 h-5 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`}
+                    fill="none"
+                    stroke="#10B981"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </div>
+              </button>
+
+              {/* Custom Dropdown Menu */}
+              {isDropdownOpen && (
+                <div className="absolute z-50 w-full mt-1 bg-white border-2 border-green-500 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+                  {availableSessions.length === 0 ? (
+                    <div className="px-4 py-3 text-gray-500 text-center">
+                      No sessions available
+                    </div>
+                  ) : (
+                    availableSessions.map((session) => (
+                      <button
+                        key={session._id}
+                        type="button"
+                        onClick={() => {
+                          handleSessionChange(session._id);
+                          setIsDropdownOpen(false);
+                        }}
+                        className="w-full px-4 py-3 text-left hover:bg-green-50 focus:bg-green-50 focus:outline-none transition-colors duration-150 text-center"
+                      >
+                        {formatSessionOption(session)}
+                      </button>
+                    ))
+                  )}
+                </div>
+              )}
             </div>
 
             {loading && (
-              <div className="mt-3 flex items-center text-sm text-green-600">
+              <div className="mt-3 flex items-center justify-center text-sm text-green-600">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2"></div>
                 Loading sessions...
               </div>
             )}
             {error && (
               <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
-                <p className="text-sm text-red-600">{error}</p>
+                <p className="text-sm text-red-600 text-center">{error}</p>
               </div>
             )}
           </div>
