@@ -4,6 +4,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import MarkAttendance from "../components/attendance/MarkAttendance";
 import AttendanceList from "../components/attendance/AttendanceList";
 import AttendanceStatus from "../components/attendance/AttendanceStatus";
+import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
 
 export default function AttendancePage() {
   const { user } = useAuth();
@@ -162,65 +163,97 @@ export default function AttendancePage() {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">
-        Attendance Management
-      </h1>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
+      {/* Header Section */}
+      <div className="app-header">
+        <div className="app-header__avatar">
+          <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent-color)' }}>
+            <ClipboardDocumentListIcon className="w-8 h-8 text-white" />
+          </div>
+        </div>
 
-      {/* Tab Navigation */}
-      <div className="border-b border-gray-200 mb-6">
-        <nav className="-mb-px flex space-x-8">
+        <div className="app-header__content">
+          <h1 className="app-header__title">Attendance Management</h1>
+          <p className="app-header__description">
+            Track and manage student attendance.<br />
+            Keep records of all your sessions.
+          </p>
+        </div>
+      </div>
+
+      {/* Content Container */}
+      <div className="w-full max-w-4xl mt-6 space-y-6">
+        {/* Tab Navigation */}
+        <div className="flex flex-wrap gap-3 justify-center">
           {visibleTabs.map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`py-2 px-1 border-b-2 font-medium text-sm ${
-                activeTab === tab.id
-                  ? "border-primary text-primary"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              className={`px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 min-w-[140px] cursor-pointer ${
+                activeTab === tab.id 
+                  ? "text-white shadow-lg hover:bg-opacity-90" 
+                  : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 shadow-sm"
               }`}
-              style={{
-                borderBottomColor: activeTab === tab.id ? 'var(--primary-color)' : undefined,
-                color: activeTab === tab.id ? 'var(--primary-color)' : undefined
-              }}
+              style={activeTab === tab.id ? { backgroundColor: '#10B981' } : {}}
             >
               {tab.label}
             </button>
           ))}
-        </nav>
-      </div>
-
-      {/* Session Selector for Mentors */}
-      {user?.role === "mentor" && (
-        <div className="mb-6">
-          <label
-            htmlFor="session-select"
-            className="block text-sm font-medium text-gray-700 mb-2"
-          >
-            Session
-          </label>
-          <select
-            id="session-select"
-            value={selectedSession}
-            onChange={(e) => handleSessionChange(e.target.value)}
-            className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
-          >
-            <option value="">Choose a session to manage attendance...</option>
-            {availableSessions.map((session) => (
-              <option key={session._id} value={session._id}>
-                {formatSessionOption(session)}
-              </option>
-            ))}
-          </select>
-          {loading && (
-            <p className="text-sm text-gray-500 mt-1">Loading sessions...</p>
-          )}
-          {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         </div>
-      )}
 
-      {/* Tab Content */}
-      <div className="mt-6">{renderTabContent()}</div>
+        {/* Session Selector Card for Mentors */}
+        {user?.role === "mentor" && (
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Session</h3>
+            <div className="relative">
+              <select
+                id="session-select"
+                value={selectedSession}
+                onChange={(e) => handleSessionChange(e.target.value)}
+                className="w-full px-4 py-3 text-base bg-white rounded-lg focus:outline-none text-gray-900 appearance-none cursor-pointer transition-all duration-200"
+                style={{
+                  border: '2px solid #10B981',
+                  backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2310B981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
+                  backgroundPosition: 'right 1rem center',
+                  backgroundRepeat: 'no-repeat',
+                  backgroundSize: '1em 1em',
+                  paddingRight: '2.75rem'
+                }}
+                onFocus={(e) => {
+                  e.target.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.2)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.boxShadow = 'none';
+                }}
+              >
+                <option value="" disabled>Choose a session to manage attendance...</option>
+                {availableSessions.map((session) => (
+                  <option key={session._id} value={session._id}>
+                    {formatSessionOption(session)}
+                  </option>
+                ))}
+              </select>
+            </div>
+            
+            {loading && (
+              <div className="mt-3 flex items-center text-sm text-green-600">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2"></div>
+                Loading sessions...
+              </div>
+            )}
+            {error && (
+              <div className="mt-3 p-3 bg-red-50 border border-red-200 rounded-lg">
+                <p className="text-sm text-red-600">{error}</p>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Tab Content */}
+        <div className="w-full">
+          {renderTabContent()}
+        </div>
+      </div>
     </div>
   );
 }
