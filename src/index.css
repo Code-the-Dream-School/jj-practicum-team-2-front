@@ -21,145 +21,117 @@ body {
   background-color: #f9fafb;
 }
 
-/* Enhanced Button System - Dashboard Style */
 .btn {
-  padding: 0.75rem 1.5rem; 
-  border-radius: 0.5rem;
-  font-weight: 600; 
+  padding: var(--btn-padding);
+  border-radius: var(--btn-radius);
+  font-weight: var(--btn-font-weight);
   border: none;
   cursor: pointer;
-  transition: all 0.2s ease;
-  font-size: 0.875rem;
-  display: inline-flex; 
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  text-decoration: none;
-  gap: 0.5rem; 
-  white-space: nowrap;
-  min-height: 2.75rem; 
+  transition: var(--transition);
+  color: white;
 }
 
-/* Success/Primary Actions*/
-.btn-success, .btn-primary {
+.btn-primary,
+.btn-green {
   background-color: var(--success-color);
-  color: white;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.btn-success:hover, .btn-primary:hover {
+.btn-primary:hover,
+.btn-green:hover {
   background-color: #059669;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-.btn-success:disabled, .btn-primary:disabled {
-  background-color: #9ca3af;
-  cursor: not-allowed;
-  transform: none;
-  box-shadow: none;
+.btn-blue {
+  background-color: #3b82f6;
 }
 
-/* Primary Navigation */
-.btn-primary-nav {
-  background-color: var(--primary-color);
-  color: white;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+.btn-blue:hover {
+  background-color: #2563eb;
 }
 
-.btn-primary-nav:hover {
-  background-color: #1e3a8a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-/* Secondary Actions  */
-.btn-secondary {
+.btn-secondary,
+.btn-light {
   background-color: #6b7280;
   color: white;
-  border: 1px solid #6b7280;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.btn-secondary:hover {
+.btn-secondary:hover,
+.btn-light:hover {
   background-color: #4b5563;
-  border-color: #4b5563;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Warning Actions */
-.btn-warning {
-  background-color: var(--warning-color);
-  color: white;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+.btn-accent {
+  background-color: var(--accent-color);
 }
 
-.btn-warning:hover {
-  background-color: #d97706;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+.btn-accent:hover {
+  opacity: 0.9;
 }
 
-/* Danger Actions*/
+.btn-success {
+  background-color: var(--success-color);
+}
+
+.btn-success:hover {
+  background-color: #059669;
+}
+
 .btn-danger {
   background-color: var(--error-color);
-  color: white;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
 .btn-danger:hover {
   background-color: #dc2626;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* Accent Actions*/
-.btn-accent {
+.btn-rounded {
+  border-radius: 0.5rem;
+}
+
+/* Session section headers styling */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.section-underline {
+  width: 60px;
+  height: 3px;
   background-color: var(--accent-color);
-  color: white;
-  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border-radius: 1.5px;
 }
 
-.btn-accent:hover {
-  background-color: #e04e2a;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+/* Button styles - more specific to override Tailwind */
+.btn.btn-secondary {
+  background-color: #6b7280 !important;
+  color: white !important;
+  border: none !important;
 }
 
-/* Outline variants */
-.btn-outline {
-  background-color: transparent;
-  border: 1px solid currentColor;
-  color: var(--gray-700);
+.btn.btn-secondary:hover {
+  background-color: #4b5563 !important;
 }
 
-.btn-outline:hover {
-  background-color: var(--gray-200);
-  transform: translateY(-1px);
+.btn.btn-danger {
+  background-color: var(--error-color) !important;
+  color: white !important;
+  border: none !important;
 }
 
-/* Size variants */
-.btn-sm {
-  padding: 0.5rem 1rem;
-  font-size: 0.75rem;
-  min-height: 2.25rem;
+.btn.btn-danger:hover {
+  background-color: #dc2626 !important;
 }
 
-.btn-lg {
-  padding: 1rem 2rem;
-  font-size: 1rem;
-  min-height: 3.25rem;
+.btn.btn-primary {
+  background-color: var(--success-color) !important;
+  color: white !important;
+  border: none !important;
 }
 
-/* Full width */
-.btn-full {
-  width: 100%;
-}
-
-/* Card content specific styles */
-.card-content .btn {
-  margin-top: 1rem;
+.btn.btn-primary:hover {
+  background-color: #059669 !important;
 }
 
 .app-header {
@@ -253,6 +225,24 @@ body {
   margin-bottom: 0.5rem;
 }
 
+.card-content button {
+  margin-top: 1rem;
+  background-color: var(--success-color);
+  color: white;
+  padding: var(--btn-padding);
+  border-radius: var(--btn-radius);
+  font-weight: var(--btn-font-weight);
+  border: none;
+  cursor: pointer;
+  transition: var(--transition);
+  min-width: 120px;
+}
+
+.card-content button:hover {
+  background-color: #059669;
+  transform: translateY(-1px);
+}
+
 .bg-primary {
   background-color: var(--primary-color);
 }
@@ -287,20 +277,4 @@ body {
     min-width: 100px;
     white-space: nowrap;
   }
-}
-
-/* Section titles and underlines for dashboard sessions */
-.section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: var(--gray-900);
-  margin-bottom: 0.5rem;
-}
-
-.section-underline {
-  width: 3rem;
-  height: 3px;
-  background-color: var(--accent-color);
-  border-radius: 2px;
-  margin-bottom: 1rem;
 }

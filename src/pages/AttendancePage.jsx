@@ -134,16 +134,27 @@ export default function AttendancePage() {
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 text-center">
           <div className="flex flex-col items-center justify-center py-12">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
-              <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                className="w-8 h-8 text-green-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Ready to manage attendance</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+              Ready to manage attendance
+            </h3>
             <p className="text-gray-600 max-w-sm mx-auto">
-              {activeTab === "mark" 
+              {activeTab === "mark"
                 ? "Select a session above to start marking attendance for your students."
-                : "Choose a session above to view detailed attendance records."
-              }
+                : "Choose a session above to view detailed attendance records."}
             </p>
           </div>
         </div>
@@ -167,7 +178,10 @@ export default function AttendancePage() {
       {/* Header Section */}
       <div className="app-header">
         <div className="app-header__avatar">
-          <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent-color)' }}>
+          <div
+            className="w-12 h-12 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: "var(--accent-color)" }}
+          >
             <ClipboardDocumentListIcon className="w-8 h-8 text-white" />
           </div>
         </div>
@@ -175,7 +189,8 @@ export default function AttendancePage() {
         <div className="app-header__content">
           <h1 className="app-header__title">Attendance Management</h1>
           <p className="app-header__description">
-            Track and manage student attendance.<br />
+            Track and manage student attendance.
+            <br />
             Keep records of all your sessions.
           </p>
         </div>
@@ -190,11 +205,11 @@ export default function AttendancePage() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 rounded-lg font-semibold text-sm transition-all duration-200 min-w-[140px] cursor-pointer ${
-                activeTab === tab.id 
-                  ? "text-white shadow-lg hover:bg-opacity-90" 
+                activeTab === tab.id
+                  ? "text-white shadow-lg hover:bg-opacity-90"
                   : "bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 shadow-sm"
               }`}
-              style={activeTab === tab.id ? { backgroundColor: '#10B981' } : {}}
+              style={activeTab === tab.id ? { backgroundColor: "#10B981" } : {}}
             >
               {tab.label}
             </button>
@@ -204,7 +219,9 @@ export default function AttendancePage() {
         {/* Session Selector Card for Mentors */}
         {user?.role === "mentor" && (
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-4">Select Session</h3>
+            <h3 className="text-lg font-semibold text-gray-900 mb-4">
+              Select Session
+            </h3>
             <div className="relative">
               <select
                 id="session-select"
@@ -212,21 +229,24 @@ export default function AttendancePage() {
                 onChange={(e) => handleSessionChange(e.target.value)}
                 className="w-full px-4 py-3 text-base bg-white rounded-lg focus:outline-none text-gray-900 appearance-none cursor-pointer transition-all duration-200"
                 style={{
-                  border: '2px solid #10B981',
+                  border: "2px solid #10B981",
                   backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2310B981' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`,
-                  backgroundPosition: 'right 1rem center',
-                  backgroundRepeat: 'no-repeat',
-                  backgroundSize: '1em 1em',
-                  paddingRight: '2.75rem'
+                  backgroundPosition: "right 1rem center",
+                  backgroundRepeat: "no-repeat",
+                  backgroundSize: "1em 1em",
+                  paddingRight: "2.75rem",
                 }}
                 onFocus={(e) => {
-                  e.target.style.boxShadow = '0 0 0 3px rgba(16, 185, 129, 0.2)';
+                  e.target.style.boxShadow =
+                    "0 0 0 3px rgba(16, 185, 129, 0.2)";
                 }}
                 onBlur={(e) => {
-                  e.target.style.boxShadow = 'none';
+                  e.target.style.boxShadow = "none";
                 }}
               >
-                <option value="" disabled>Choose a session to manage attendance...</option>
+                <option value="" disabled>
+                  Choose a session to manage attendance...
+                </option>
                 {availableSessions.map((session) => (
                   <option key={session._id} value={session._id}>
                     {formatSessionOption(session)}
@@ -234,7 +254,7 @@ export default function AttendancePage() {
                 ))}
               </select>
             </div>
-            
+
             {loading && (
               <div className="mt-3 flex items-center text-sm text-green-600">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2"></div>
@@ -250,9 +270,7 @@ export default function AttendancePage() {
         )}
 
         {/* Tab Content */}
-        <div className="w-full">
-          {renderTabContent()}
-        </div>
+        <div className="w-full">{renderTabContent()}</div>
       </div>
     </div>
   );

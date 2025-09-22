@@ -38,7 +38,10 @@ export default function StudentDashboard() {
       {/* Header Section - using shared styles */}
       <div className="app-header">
         <div className="app-header__avatar">
-          <div className="w-12 h-12 rounded-lg flex items-center justify-center" style={{ backgroundColor: 'var(--accent-color)' }}>
+          <div
+            className="w-12 h-12 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: "var(--accent-color)" }}
+          >
             <AcademicCapIcon className="w-8 h-8 text-white" />
           </div>
         </div>
