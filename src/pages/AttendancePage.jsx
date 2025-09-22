@@ -111,8 +111,13 @@ export default function AttendancePage() {
   }, [user?.role]);
 
   const formatSessionOption = (session) => {
+    if (!session) return "Invalid session";
+
     const date = new Date(session.date);
-    const formattedDate = date.toLocaleDateString("en-US", {
+    if (isNaN(date))
+      return `${session.title || "Unknown session"} (invalid date)`;
+
+    const formattedDate = date.toLocaleString("en-US", {
       month: "short",
       day: "numeric",
       hour: "2-digit",

@@ -333,6 +333,12 @@ export default function SessionCard({
       </div>
 
       <div className="card-content">
+        {/* Add session description if it exists */}
+        {session.description && (
+          <p className="text-gray-600 text-sm mb-2 italic break-words overflow-wrap-anywhere leading-relaxed">
+            {session.description}
+          </p>
+        )}
         {!isMentor() && (
           <p>
             Mentor: {session.mentorId?.firstName} {session.mentorId?.lastName}
@@ -352,7 +358,9 @@ export default function SessionCard({
               message.includes("Success") ||
               message.includes("registered") ||
               message.includes("unregistered") ||
-              message.includes("started")
+              message.includes("started") ||
+              message.includes("Redirecting to attendance") ||
+              message.includes("Opening")
                 ? "bg-green-50 text-green-600"
                 : "bg-red-50 text-red-600"
             }`}
