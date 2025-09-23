@@ -63,22 +63,6 @@ export default function StudentProfile() {
         <div className="card-content">
           {isEditing ? (
             <>
-              <input
-                type="text"
-                name="name"
-                value={formData.name}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                placeholder="Full name"
-              />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                className="w-full border border-gray-300 rounded-md p-2 mb-2"
-                placeholder="Email"
-              />
               <textarea
                 name="bio"
                 value={formData.bio}
