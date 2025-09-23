@@ -27,28 +27,9 @@ export default function MentorDashboard() {
 
   const handleCreateSession = async (sessionData) => {
     try {
-      const classResponse = await fetch(
-        "http://localhost:8000/api/v1/classes",
-        {
-          credentials: "include",
-        },
-      );
-
-      let defaultClassId;
-      if (classResponse.ok) {
-        const classes = await classResponse.json();
-        defaultClassId = classes[0]?._id;
-      }
-
-      if (!defaultClassId) {
-        alert("No classes available. Please contact administrator.");
-        return;
-      }
-
       const payload = {
         title: sessionData.title,
         description: sessionData.description,
-        classId: defaultClassId,
         courseName: sessionData.courseName,
         mentorId: user.id,
         date: sessionData.date,
@@ -142,19 +123,23 @@ export default function MentorDashboard() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
-      {/* Header Section */}
+      {/* Header Section - using shared styles */}
       <div className="app-header">
         <div className="app-header__avatar">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <AcademicCapIcon className="w-8 h-8 text-blue-600" />
+          <div
+            className="w-12 h-12 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: "var(--accent-color)" }}
+          >
+            <AcademicCapIcon className="w-8 h-8 text-white" />
           </div>
         </div>
 
-        <div className="app-header__content text-center">
+        <div className="app-header__content">
           <h1 className="app-header__title">This Week&apos;s Sessions</h1>
           <p className="app-header__description">
-            All your mentorship sessions in one place, Never miss a sessions
-            again
+            All your mentorship sessions in one place.
+            <br />
+            Never miss your sessions!
           </p>
         </div>
       </div>
@@ -163,7 +148,7 @@ export default function MentorDashboard() {
         <button
           onClick={handleOpenModal}
           type="button"
-          className="btn btn-primary btn-rounded"
+          className="btn btn-primary btn-rounded mr-4"
         >
           Create a New Session
         </button>

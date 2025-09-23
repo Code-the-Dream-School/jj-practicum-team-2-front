@@ -132,7 +132,10 @@ export default function WeeklyGoalIndicator({
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div
+      className="bg-primary rounded-xl shadow-sm border border-gray-200 p-6 mb-6"
+      style={{ backgroundColor: "var(--primary-color)", color: "white" }}
+    >
       {/* Error/Success Messages */}
       {(errorMessage || successMessage) && (
         <div
@@ -155,48 +158,92 @@ export default function WeeklyGoalIndicator({
 
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         {/* Goal Status and Progress */}
-        <div className="flex-1">
+        <div className="flex-1 relative">
           <div className="flex items-center gap-3 mb-3">
             <div
-              className={`w-3 h-3 rounded-full ${goalMet ? "bg-green-500" : "bg-yellow-500"}`}
+              className="w-3 h-3 rounded-full"
+              style={{ backgroundColor: "var(--accent-color)" }}
             ></div>
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-white">
               {goalMet ? "Weekly goal met!" : "Working towards weekly goal"}
             </h3>
           </div>
 
           {/* Progress Bar */}
-          <div className="w-full bg-gray-200 rounded-full h-2 mb-3">
+          <div className="w-full bg-gray-200 bg-opacity-30 rounded-full h-2 mb-3">
             <div
-              className={`h-2 rounded-full transition-all duration-300 ${
-                goalMet ? "bg-green-500" : "bg-blue-500"
-              }`}
-              style={{ width: `${progressPercentage}%` }}
+              className="h-2 rounded-full transition-all duration-300"
+              style={{
+                width: `${progressPercentage}%`,
+                backgroundColor: "var(--success-color)",
+              }}
             ></div>
           </div>
 
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-white opacity-90">
             {attendedSessions} of {weeklyGoal} sessions completed this week
           </p>
         </div>
 
         {/* Session Counts */}
-        <div className="flex gap-8">
+        <div className="flex gap-6 sm:gap-8">
           {/* Attended Column */}
-          <div className="flex flex-col items-center min-w-[80px]">
-            <div className="text-3xl font-bold text-blue-600 leading-none">
+          <div className="flex flex-col items-center justify-center min-w-[90px]">
+            <div
+              className="text-3xl font-bold leading-none mb-1 text-center w-full"
+              style={{
+                color: "var(--primary-color)",
+                backgroundColor: "white",
+                borderRadius: "0.375rem",
+                padding: "0.25rem",
+              }}
+            >
               {attendedSessions}
             </div>
-            <div className="text-sm text-gray-500 uppercase tracking-wide mt-1">
+            <div className="text-xs text-white opacity-75 uppercase tracking-wider font-medium text-center">
               Attended
             </div>
           </div>
 
           {/* Goal Column */}
-          <div className="flex flex-col items-center min-w-[80px] relative">
-            {/* Edit Mode Popup */}
+          <div className="flex flex-col items-center justify-center min-w-[90px] relative">
+            {/* Goal Display */}
+            <div
+              className="cursor-pointer hover:bg-gray-600 hover:bg-opacity-30 rounded p-1 transition-colors flex flex-col items-center justify-center w-full"
+              onClick={handleGoalClick}
+            >
+              <div
+                className="text-3xl font-bold leading-none mb-1 text-center w-full"
+                style={{
+                  color: "var(--success-color)",
+                  backgroundColor: "white",
+                  borderRadius: "0.375rem",
+                  padding: "0.25rem",
+                }}
+              >
+                {weeklyGoal}
+              </div>
+              <div className="text-xs text-white opacity-75 uppercase tracking-wider font-medium text-center flex items-center justify-center gap-1">
+                Goal
+                <PencilIcon className="w-3 h-3 text-white opacity-50" />
+              </div>
+            </div>
+
+            {/* Edit Mode Popup - прямо поверх кнопки Goal */}
             {isEditing && (
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 bg-white border border-gray-300 rounded-lg p-3 shadow-lg z-10 -mt-2">
+              <div
+                className="absolute inset-0 border border-gray-300 rounded-lg p-3 shadow-lg z-10 flex flex-col items-center justify-center"
+                style={{
+                  backgroundColor: "var(--primary-color)",
+                  color: "white",
+                }}
+              >
+                <div
+                  className="text-xs uppercase tracking-wider font-bold text-center mb-2"
+                  style={{ color: "var(--success-color)" }}
+                >
+                  GOAL
+                </div>
                 <input
                   type="number"
                   min="1"
@@ -204,7 +251,11 @@ export default function WeeklyGoalIndicator({
                   value={tempGoal}
                   onChange={handleInputChange}
                   onKeyDown={handleKeyPress}
-                  className="w-16 text-center text-2xl font-bold text-green-600 border border-gray-300 rounded px-1 py-1 mb-2"
+                  className="w-16 text-center text-2xl font-bold border border-gray-300 rounded px-1 py-1 mb-2"
+                  style={{
+                    color: "var(--primary-color)",
+                    backgroundColor: "white",
+                  }}
                   autoFocus
                   disabled={isLoading}
                 />
@@ -212,7 +263,8 @@ export default function WeeklyGoalIndicator({
                   <button
                     onClick={handleSave}
                     disabled={isLoading}
-                    className="px-2 py-1 text-xs bg-green-500 text-white rounded hover:bg-green-600 disabled:opacity-50"
+                    className="px-2 py-1 text-xs text-white rounded hover:opacity-80 disabled:opacity-50"
+                    style={{ backgroundColor: "var(--success-color)" }}
                   >
                     {isLoading ? "..." : "✓"}
                   </button>
@@ -226,21 +278,6 @@ export default function WeeklyGoalIndicator({
                 </div>
               </div>
             )}
-
-            {/* Goal Display */}
-            <div
-              className="cursor-pointer hover:bg-gray-50 rounded p-1 transition-colors flex flex-col items-center"
-              onClick={handleGoalClick}
-              title="Click to edit weekly goal"
-            >
-              <div className="text-3xl font-bold text-green-600 leading-none">
-                {weeklyGoal}
-              </div>
-              <div className="text-sm text-gray-500 uppercase tracking-wide mt-1 flex items-center gap-1">
-                Goal
-                <PencilIcon className="w-4 h-4 text-gray-400" />
-              </div>
-            </div>
           </div>
         </div>
       </div>
