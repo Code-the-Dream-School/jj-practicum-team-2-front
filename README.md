@@ -1,31 +1,110 @@
-# Front-End Repo for Node/React Practicum
+# 🚀 MentorHub <br/>
+MentorHub is a full-stack web application designed to streamline the organization and participation in mentorship sessions for bootcamp programs. It improves communication between mentors and students by offering a centralized platform to manage sessions, share resources, and track attendance.
+<br />
 
-This will be the front-end for your team's practicum project.
+## 📌 Table of Contents
+- Features
+- Problem Statement
+- Tech Stack
+- Screenshots
+- Getting Started
+- Folder Structure
+- Future Improvements
+- Contributors
+- License
+### 🧩 Features
+<hr/>
 
-It is suggested that you run these instructions **after** you setup the back-end server first.
-You can go through these steps during your first group meeting in case you need assistance from your mentors.
+#### For Mentors:
+- Create and manage mentor profiles
+- Schedule mentorship sessions
+- Upload session recordings and materials
+- View attendance data
 
-You will have two folders inside one team folder (one for front-end and one for back-end). Name the parent folder something appropriate (in the below example we title it "Practicum Project"). Then clone directly (do not fork and clone) the front and back repos while inside the parent ("Practicum Project") project folder.
+#### For Students:
+- Browse and sign up for sessions
+- Receive real-time updates and notifications
+- Revisit past session recordings and notes
+- View mentor profiles and session topics
 
-![folders](images/folder_structure.png)
+### ❗ Problem Statement
+<hr/>
+Managing mentorship sessions is chaotic due to:
+- Lack of clear session details (topic, format, expectations)
+- Missed updates caused by scattered messages in tools like Slack
+- Fragmented mentor info and session links spread across files and channels
+  
+<b>MentorHub</b> solves these issues by centralizing all session-related communication and resources into one platform.
 
-> The front-end app (React) will be running on port 5173. The back-end server will be running on port 8000. You will need to run both the front-end app and the back-end server at the same time to test your app.
+### 🛠 Tech Stack
+<hr />
+<div align="left">
+  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
+  <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
+  <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white" alt="Node.js" />
+  <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white" alt="Express.js" />
+  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
+  <img src="https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white" alt="JWT" />
+</div>
 
-### Setting up local development environment
+| **Area**  | **Tech Used** |
+| ------------- | ------------- |
+| Frontend  | ![React](https://img.shields.io/badge/Frontend-React-blue?logo=react) ![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind_CSS-38bdf8?logo=tailwindcss&logoColor=white)|
+| Backend  |  ![Node.js](https://img.shields.io/badge/Backend-Node.js-339933?logo=nodedotjs&logoColor=white) ![Express](https://img.shields.io/badge/Framework-Express.js-black?logo=express&logoColor=white)|
+| Database  | ![MongoDB](https://img.shields.io/badge/Database-MongoDB-4EA94B?logo=mongodb&logoColor=white)  |
+| Auth  | ![JWT](https://img.shields.io/badge/Auth-JWT-red?logo=jsonwebtokens) ![bcrypt](https://img.shields.io/badge/Security-bcrypt-orange?logo=key&logoColor=white) |
+| Hosting  |   |
+### 🖼 Screenshots
+<hr />
 
-1. Clone this repository to the folder that was already created for both the front-end and back-end repos
-2. Run `npm install` to install dependencies
-3. Pull the latest version of the `main` branch (when needed)
-4. Run `npm run dev` to start the development server
-5. Open http://localhost:5173 with your browser to see the data received the back-end server.
-6. Now you have your front-end and back-end running locally!
+### 🧪 Getting Started
 
-#### Running the front-end server in Visual Studio Code
+#### Prerequisites
+Make sure you have the following installed:
+- Node.js
+- npm or yarn
+- Git
 
-Note: In the below example, the group's front-end repository was named `bb-practicum-team1-front` and the back-end repository was named `bb-practicum-team-1-back`. Your repository will have a different name, but the rest should look the same.
+#### Installation
 
-![vsc running](images/front-end-running-vsc.png)
+1. Clone the repo:
+```
+git clone https://github.com/yourusername/mentorhub.git
+cd mentorhub
+```
+2. Install frontend dependencies:
+```
+cd client
+npm install
+```
 
-#### Running the front-end server in the browser
+3. (Optional) Install backend dependencies:
+```
+cd ../server
+npm install
+```
+4. Run the app:
+```
+npm start
+```
 
-![browser running](images/front-end-running-browser.png)
+### 🔮 Future Improvements
+<hr />
+
+- Add support for video uploads and playback
+- Improve mobile responsiveness
+- Enhance attendance analytics
+- Implement calendar integration (e.g., Google Calendar)
+
+### 👨‍💻 Contributors
+<hr />
+
+- [@DariaSidorko](https://github.com/DariaSidorko) – Backend Development
+- [@desmccl](https://github.com/desmccl) – Frontend Development
+- [@Ligo-code](https://github.com/Ligo-code) – Frontend Development
+- [@leg-aman](https://github.com/leg-aman) - Frontend Development
+
+### 📄 License
+<hr />
+
+This project is licensed under the MIT License.
