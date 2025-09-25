@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react";
+import { profileAPI } from "../services/api";
 
 /**
  * Generic hook to fetch, edit, and update a user profile
- *
- * @param {string} fetchUrl - API endpoint to fetch the profile
- * @param {string} updateUrlBase - Base API endpoint for updates (e.g., "/api/v1/user")
- * @param {function} mapToFormData - Function to map API data to local form state
- * @param {string} uploadUrl - Optional API endpoint to upload images
+ * Now uses profileAPI with correct base URL for production
  */
-export function useProfile(fetchUrl, updateUrlBase, mapToFormData) {
+export function useProfile(mapToFormData) {
   const [user, setUser] = useState(null);
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(true);
@@ -17,20 +14,18 @@ export function useProfile(fetchUrl, updateUrlBase, mapToFormData) {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch(fetchUrl, { credentials: "include" });
-        if (!res.ok) throw new Error("Failed to load profile");
-        const data = await res.json();
+        const data = await profileAPI.getProfile();
         setUser(data.profile);
         setFormData(mapToFormData(data.profile));
       } catch (err) {
-        console.error(err);
+        console.error("Failed to load profile:", err);
         alert("Error loading profile");
       } finally {
         setLoading(false);
       }
     };
     fetchProfile();
-  }, [fetchUrl, mapToFormData]);
+  }, [mapToFormData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -47,23 +42,14 @@ export function useProfile(fetchUrl, updateUrlBase, mapToFormData) {
         zoomLink: formData.zoomLink || "",
       };
 
-      const res = await fetch(`${updateUrlBase}/${user._id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        credentials: "include",
-        body: JSON.stringify(updates),
-      });
-
-      const data = await res.json();
-      if (!res.ok) throw new Error(data?.error || "Failed to update profile");
-
-      setUser(data);
-      setFormData(mapToFormData(data));
+      const data = await profileAPI.updateProfile(user._id, updates);
+      setUser(data.user);
+      setFormData(mapToFormData(data.user));
       setIsEditing(false);
       alert("Profile updated!");
     } catch (err) {
-      console.error(err);
-      alert(err.message || "Error updating profile");
+      console.error("Failed to update profile:", err);
+      alert(err.response?.data?.error || "Error updating profile");
     }
   };
 

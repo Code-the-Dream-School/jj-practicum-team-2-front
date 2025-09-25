@@ -1,9 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 
-const FETCH_URL = "http://localhost:8000/api/v1/user/myProfile";
-const UPDATE_URL = "http://localhost:8000/api/v1/user";
-
 const mapToFormData = (profile) => ({
   name: `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
   email: profile.email || "",
@@ -29,7 +26,7 @@ export default function StudentProfile() {
     handleChange,
     handleSave,
     setFormData,
-  } = useProfile(FETCH_URL, UPDATE_URL, mapToFormData);
+  } = useProfile(mapToFormData);
 
   if (loading) return <p className="p-4">Loading profile...</p>;
   if (!user) return <p className="p-4">No profile found.</p>;

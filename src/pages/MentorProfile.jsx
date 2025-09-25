@@ -2,10 +2,6 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useProfile } from "../hooks/useProfile";
 
-// API endpoints
-const FETCH_URL = "http://localhost:8000/api/v1/user/myProfile";
-const UPDATE_URL = "http://localhost:8000/api/v1/user";
-
 // Normalize backend profile into formData
 const mapToFormData = (profile) => ({
   name: `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
@@ -31,7 +27,7 @@ export default function MentorProfile() {
     handleChange,
     handleSave,
     setFormData,
-  } = useProfile(FETCH_URL, UPDATE_URL, mapToFormData);
+  } = useProfile(mapToFormData);
 
   if (loading) return <p className="p-4">Loading profile...</p>;
   if (!user) return <p className="p-4">No profile found.</p>;
