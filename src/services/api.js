@@ -68,6 +68,16 @@ export const dashboardAPI = {
     return response.data;
   },
 
+  getMentorDashboard: async () => {
+    const response = await api.get("/sessions/mentor-dashboard");
+    return response.data;
+  },
+
+  updateWeeklyGoal: async (weeklyGoal) => {
+    const response = await api.put("/sessions/weekly-goal", { weeklyGoal });
+    return response.data;
+  },
+
   registerForSession: async (sessionId) => {
     const response = await api.post(`/sessions/${sessionId}/register`);
     return response.data;
@@ -75,6 +85,30 @@ export const dashboardAPI = {
 
   unregisterFromSession: async (sessionId) => {
     const response = await api.delete(`/sessions/${sessionId}/unregister`);
+    return response.data;
+  },
+
+  markAttendance: async (sessionId, attendeeIds) => {
+    const response = await api.post(`/sessions/${sessionId}/attendance`, {
+      attendeeIds,
+    });
+    return response.data;
+  },
+  getSessionAttendance: async (sessionId) => {
+    const response = await api.get(`/sessions/${sessionId}/attendance`);
+    return response.data;
+  },
+
+  // ✅ GET attendance history for a student
+  getStudentAttendanceHistory: async (studentId) => {
+    const response = await api.get(`/students/${studentId}/attendance`);
+    return response.data;
+  },
+};
+
+export const classAPI = {
+  getDefaultClass: async () => {
+    const response = await api.get("/classes/default");
     return response.data;
   },
 };

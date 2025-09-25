@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SessionActions({
   session,
@@ -6,9 +7,13 @@ export default function SessionActions({
   isRegistered,
   onRegister,
   onUnregister,
+  onMarkAttendance,
+  onEditSession,
+  onStartSession,
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const { isMentor } = useAuth();
 
   const handleAction = async (action) => {
     setIsLoading(true);
@@ -41,7 +46,67 @@ export default function SessionActions({
     }
   };
 
-  const renderActions = () => {
+  const renderMentorActions = () => {
+    switch (statusType) {
+      case "inProgress":
+        return (
+          <div className="space-y-2">
+            <button
+              className="btn-accent w-full"
+              onClick={joinSession}
+              disabled={!session.zoomLink}
+            >
+              Join Session
+            </button>
+          </div>
+        );
+
+      case "upcoming":
+        return (
+          <div className="space-y-2">
+            <button
+              className="btn-primary w-full"
+              onClick={() => handleAction(onStartSession)}
+              disabled={isLoading}
+            >
+              {isLoading ? "Starting..." : "Start Session"}
+            </button>
+            <button
+              className="btn-secondary w-full"
+              onClick={() => handleAction(onEditSession)}
+              disabled={isLoading}
+            >
+              Edit Session
+            </button>
+          </div>
+        );
+
+      case "past":
+        return (
+          <div className="space-y-2">
+            <button
+              className="btn-primary w-full"
+              onClick={() => handleAction(onMarkAttendance)}
+              disabled={isLoading}
+            >
+              {isLoading ? "Updating..." : "Mark Attendance"}
+            </button>
+            <button
+              className="btn-secondary w-full"
+              onClick={watchRecording}
+              disabled={!session.recordingUrl}
+            >
+              {session.recordingUrl ? "Watch Recording" : "No Recording"}
+            </button>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
+  const renderStudentActions = () => {
     switch (statusType) {
       case "inProgress":
         return (
@@ -127,7 +192,7 @@ export default function SessionActions({
 
   return (
     <div>
-      {renderActions()}
+      {isMentor() ? renderMentorActions() : renderStudentActions()}
       {message && (
         <div
           className={`mt-2 p-2 text-sm rounded ${

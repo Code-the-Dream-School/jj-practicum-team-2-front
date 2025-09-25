@@ -51,13 +51,13 @@ body {
 
 .btn-secondary,
 .btn-light {
-  background-color: #f3f4f6;
-  color: var(--gray-700);
+  background-color: #6b7280;
+  color: white;
 }
 
 .btn-secondary:hover,
 .btn-light:hover {
-  background-color: #e5e7eb;
+  background-color: #4b5563;
 }
 
 .btn-accent {
@@ -66,6 +66,131 @@ body {
 
 .btn-accent:hover {
   opacity: 0.9;
+}
+
+.btn-success {
+  background-color: var(--success-color);
+}
+
+.btn-success:hover {
+  background-color: #059669;
+}
+
+.btn-danger {
+  background-color: var(--error-color);
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+
+.btn-rounded {
+  border-radius: 0.5rem;
+}
+
+/* Session section headers styling */
+.section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-bottom: 0.5rem;
+}
+
+.section-underline {
+  width: 60px;
+  height: 3px;
+  background-color: var(--accent-color);
+  border-radius: 1.5px;
+}
+
+/* Button styles - more specific to override Tailwind */
+.btn.btn-secondary {
+  background-color: #6b7280 !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn.btn-secondary:hover {
+  background-color: #4b5563 !important;
+}
+
+.btn.btn-danger {
+  background-color: var(--error-color) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn.btn-danger:hover {
+  background-color: #dc2626 !important;
+}
+
+.btn.btn-primary {
+  background-color: var(--success-color) !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btn.btn-primary:hover {
+  background-color: #059669 !important;
+}
+
+/* Dropdown select styling */
+#session-select {
+  text-align: center !important;
+  text-align-last: center !important;
+}
+
+#session-select option {
+  text-align: center !important;
+}
+
+/* Center the dropdown menu itself */
+#session-select:focus {
+  position: relative;
+}
+
+/* For webkit browsers (Chrome, Safari) */
+#session-select::-webkit-scrollbar {
+  width: 8px;
+}
+
+#session-select::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+#session-select::-webkit-scrollbar-thumb {
+  background: #10b981;
+  border-radius: 4px;
+}
+
+/* Alternative approach - custom dropdown styling */
+.session-select-wrapper {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.session-select-wrapper select {
+  transform-origin: center;
+  margin: 0 auto;
+}
+
+/* Try to center the dropdown options */
+.session-select-wrapper select:focus,
+.session-select-wrapper select:active {
+  transform: translateX(0);
+}
+
+/* For better cross-browser dropdown positioning */
+.session-select-wrapper::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: -1;
 }
 
 .app-header {

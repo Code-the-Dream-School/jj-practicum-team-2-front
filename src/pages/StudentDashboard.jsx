@@ -1,6 +1,8 @@
 import { useDashboard } from "../hooks/useDashboard";
 import Loading from "../components/common/Loading";
 import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
+import WeeklyGoalIndicator from "../components/dashboard/WeeklyGoalIndicator";
+import { AcademicCapIcon } from "@heroicons/react/24/solid";
 
 export default function StudentDashboard() {
   const {
@@ -9,6 +11,8 @@ export default function StudentDashboard() {
     error,
     registerForSession,
     unregisterFromSession,
+    updateWeeklyGoal,
+    refreshDashboard, // Add refresh function from hook
   } = useDashboard();
 
   if (loading) return <Loading />;
@@ -21,10 +25,7 @@ export default function StudentDashboard() {
             Error Loading Dashboard
           </h2>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button
-            className="btn-primary"
-            onClick={() => window.location.reload()}
-          >
+          <button className="btn-primary" onClick={refreshDashboard}>
             Retry
           </button>
         </div>
@@ -37,7 +38,12 @@ export default function StudentDashboard() {
       {/* Header Section - using shared styles */}
       <div className="app-header">
         <div className="app-header__avatar">
-          <span className="text-4xl">📅</span>
+          <div
+            className="w-12 h-12 rounded-lg flex items-center justify-center"
+            style={{ backgroundColor: "var(--accent-color)" }}
+          >
+            <AcademicCapIcon className="w-8 h-8 text-white" />
+          </div>
         </div>
 
         <div className="app-header__content">
@@ -50,6 +56,13 @@ export default function StudentDashboard() {
 
       {/* Sessions Content */}
       <div className="w-full max-w-4xl mt-6">
+        {/* Weekly Goal Indicator */}
+        <WeeklyGoalIndicator
+          attendedSessions={dashboardData.stats.attendedThisWeek}
+          weeklyGoal={dashboardData.stats.weeklyGoal || 3}
+          onGoalUpdate={updateWeeklyGoal}
+        />
+
         <WeeklySessionsView
           sessionsData={dashboardData.thisWeek}
           myRegistrations={dashboardData.myRegistrations}
