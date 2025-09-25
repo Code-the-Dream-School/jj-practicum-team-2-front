@@ -1,161 +1,150 @@
-import { useState, useEffect } from "react";
-import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useProfile } from "../hooks/useProfile";
 
-export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState({});
+const FETCH_URL = "http://localhost:8000/api/v1/user/myProfile";
+const UPDATE_URL = "http://localhost:8000/api/v1/user";
+
+const mapToFormData = (profile) => ({
+  name: `${profile.firstName || ""} ${profile.lastName || ""}`.trim(),
+  email: profile.email || "",
+  avatarUrl: profile.avatarUrl || "",
+  bio: profile.bio || "",
+  zoomLink: profile.zoomLink || "",
+  reviewerName: profile.reviewerName || "Sarah Johnson",
+  reviewerEmail: profile.reviewerEmail || "sarah.j@codedream.org",
+  sessionsAttended: profile.sessionsAttended || 0,
+  sessionsThisWeek: profile.sessionsThisWeek || 0,
+  upcomingSessions: profile.upcomingSessions || 0,
+});
+
+export default function StudentProfile() {
   const navigate = useNavigate();
 
-  useEffect(() => {
-    // TODO: Replace with your real API call
-    const fakeUser = {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      sessionsAttended: 12,
-      sessionsThisWeek: 2,
-      upcomingSessions: 1,
-      reviewerName: "Sarah Johnson",
-      reviewerEmail: "sarah.j@codedream.org",
-      profileImage: null, // default: none
-    };
-    setUser(fakeUser);
-    setFormData(fakeUser);
-  }, []);
+  const {
+    user,
+    formData,
+    loading,
+    isEditing,
+    setIsEditing,
+    handleChange,
+    handleSave,
+    setFormData,
+  } = useProfile(FETCH_URL, UPDATE_URL, mapToFormData);
 
-  if (!user) return <p className="p-4">Loading profile...</p>;
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      // preview immediately
-      const imageUrl = URL.createObjectURL(file);
-      setFormData({
-        ...formData,
-        profileImage: imageUrl,
-      });
-      // TODO: for real apps, upload file -> server -> save returned URL
-    }
-  };
-
-  const handleSave = () => {
-    // TODO: Replace with API call (PUT/PATCH)
-    setUser(formData);
-    setIsEditing(false);
-    alert("Profile updated!");
-  };
+  if (loading) return <p className="p-4">Loading profile...</p>;
+  if (!user) return <p className="p-4">No profile found.</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center p-4 sm:p-8">
-      {/* Header Section */}
+    <div className="min-h-screen flex flex-col items-center p-4 sm:p-8">
+      {/* Header */}
       <div className="app-header">
         <div className="app-header__avatar">
-          {formData.profileImage ? (
+          {formData.avatarUrl ? (
             <img
-              src={formData.profileImage}
+              src={formData.avatarUrl}
               alt="Profile"
-              className="w-full h-full object-cover"
+              className="w-full h-full object-cover rounded-md"
             />
           ) : (
-            <span className="text-gray-500">📷</span>
+            <span className="text-4xl">👤</span>
           )}
         </div>
 
         <div className="app-header__content">
           <h1 className="app-header__title">My Profile</h1>
+          <p className="app-header__subtitle">{formData.name}</p>
+          <p className="text-sm opacity-90">{formData.email}</p>
+        </div>
+      </div>
+
+      {/* Personal Info */}
+      <div className="info-card">
+        <h2 className="card-title">About Me</h2>
+        <div className="card-content">
           {isEditing ? (
-            <div className="w-full space-y-3 mt-4">
+            <>
+              <textarea
+                name="bio"
+                value={formData.bio}
+                onChange={handleChange}
+                placeholder="Write something about yourself..."
+                className="w-full border border-gray-300 rounded-md p-2 mb-2 resize-none"
+                rows={4}
+              />
               <input
                 type="text"
-                name="name"
-                value={formData.name}
+                name="avatarUrl"
+                value={formData.avatarUrl || ""}
                 onChange={handleChange}
-                placeholder="Full Name"
-                className="w-full text-black p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
+                placeholder="Enter image URL"
+                className="w-full border border-gray-300 rounded-md p-2"
               />
-              <input
-                type="email"
-                name="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="Email Address"
-                className="w-full text-black p-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm sm:text-base"
-              />
-              {/* File input for profile image */}
-              <div className="w-full">
-                <label className="block text-sm font-medium text-white mb-2">
-                  Profile Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  className="w-full text-sm text-white bg-white/20 rounded-lg p-3 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-white file:text-gray-700 hover:file:bg-gray-100"
-                />
-              </div>
-            </div>
+            </>
           ) : (
             <>
-              <p className="app-header__subtitle">{user.name}</p>
-              <p className="app-header__description">{user.email}</p>
+              <p className="mt-2">{formData.bio}</p>
+              {formData.avatarUrl && (
+                <p className="mt-2 text-sm text-gray-600">
+                  📷 Custom image linked
+                </p>
+              )}
             </>
           )}
         </div>
       </div>
 
-      {/* Session Stats Card */}
+      {/* Session Stats */}
       <div className="info-card">
         <h2 className="card-title">Session Stats</h2>
-        <div className="card-content">
-          <p>Total Sessions Attended: {user.sessionsAttended}</p>
-          <p>Sessions This Week: {user.sessionsThisWeek}</p>
-          <p>Upcoming Sessions: {user.upcomingSessions}</p>
-          <button onClick={() => navigate("/my-sessions")}>
-            Manage Sessions
-          </button>
+        <div className="grid grid-cols-3 gap-4 text-center">
+          <div>
+            <p className="text-2xl font-bold">{formData.sessionsAttended}</p>
+            <p className="text-gray-600 text-sm">Total Attended</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold">{formData.sessionsThisWeek}</p>
+            <p className="text-gray-600 text-sm">This Week</p>
+          </div>
+          <div>
+            <p className="text-2xl font-bold">{formData.upcomingSessions}</p>
+            <p className="text-gray-600 text-sm">Upcoming</p>
+          </div>
         </div>
+        <button
+          className="btn btn-primary mt-4"
+          onClick={() => navigate("/my-sessions")}
+        >
+          Manage Sessions
+        </button>
       </div>
 
-      {/* Homework Reviewer Card */}
+      {/* Reviewer */}
       <div className="info-card">
         <h2 className="card-title">Homework Reviewer</h2>
         <div className="card-content">
-          <p>
-            Contact Information:
-            <br />
-            {user.reviewerName}
-            <br />
-            {user.reviewerEmail}
-          </p>
+          <p>{formData.reviewerName}</p>
+          <p>{formData.reviewerEmail}</p>
           <button
+            className="btn btn-primary mt-4"
             onClick={() =>
-              (window.location.href = `mailto:${user.reviewerEmail}`)
+              (window.location.href = `mailto:${formData.reviewerEmail}`)
             }
           >
             Email Reviewer
           </button>
         </div>
       </div>
-
-      {/* Edit/Save Buttons */}
-      <div className="mt-6 flex flex-col sm:flex-row gap-3">
+      {/* Edit / Save Buttons */}
+      <div className="mt-6 flex gap-4">
         {isEditing ? (
           <>
             <button className="btn btn-blue" onClick={handleSave}>
-              Save Changes
+              Save
             </button>
             <button
-              className="btn btn-light"
+              className="btn btn-secondary"
               onClick={() => {
-                setFormData(user); // reset edits
+                setFormData(mapToFormData(user));
                 setIsEditing(false);
               }}
             >
@@ -163,7 +152,10 @@ export default function Profile() {
             </button>
           </>
         ) : (
-          <button className="btn btn-green" onClick={() => setIsEditing(true)}>
+          <button
+            className="btn btn-primary"
+            onClick={() => setIsEditing(true)}
+          >
             Edit Profile
           </button>
         )}
