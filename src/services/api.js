@@ -6,15 +6,13 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
-  withCredentials: true, // Important: allows sending signed cookies
+  withCredentials: true,
 });
 
-// Simplified response interceptor - no token management needed
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Dispatch custom event for auth context to handle logout
       window.dispatchEvent(
         new CustomEvent("auth-expired", {
           detail: { error: error.response?.data },
@@ -37,25 +35,20 @@ export const authAPI = {
   },
 
   logout: async () => {
-    // Backend uses DELETE method for logout
     const response = await api.delete(API_ENDPOINTS.LOGOUT);
     return response.data;
   },
 
-  // New method to check current authentication status
   checkAuth: async () => {
-    // This endpoint is now available on backend
     const response = await api.get("/auth/me");
     return response.data;
   },
 
-  // Forgot password functionality
   forgotPassword: async (email) => {
     const response = await api.post("/auth/forgot-password", { email });
     return response.data;
   },
 
-  // Reset password functionality
   resetPassword: async (resetData) => {
     const response = await api.post("/auth/reset-password", resetData);
     return response.data;
@@ -99,7 +92,6 @@ export const dashboardAPI = {
     return response.data;
   },
 
-  // ✅ GET attendance history for a student
   getStudentAttendanceHistory: async (studentId) => {
     const response = await api.get(`/students/${studentId}/attendance`);
     return response.data;
@@ -116,6 +108,23 @@ export const classAPI = {
 export const mainAPI = {
   getMain: async () => {
     const response = await api.get(API_ENDPOINTS.MAIN);
+    return response.data;
+  },
+};
+
+export const profileAPI = {
+  getProfile: async () => {
+    const response = await api.get("/user/myProfile");
+    return response.data;
+  },
+
+  updateProfile: async (userId, updates) => {
+    const response = await api.put(`/user/${userId}`, updates);
+    return response.data;
+  },
+
+  getUserById: async (userId) => {
+    const response = await api.get(`/user/${userId}`);
     return response.data;
   },
 };
