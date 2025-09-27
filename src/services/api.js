@@ -9,16 +9,24 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// Interceptor to attach token to requests
+// Interceptor to add Authorization header if token exists in localStorage
 api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
     if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
+      console.log(
+        "Added Authorization header to request:",
+        config.url,
+        token.substring(0, 20) + "...",
+      );
+    } else if (!token) {
+      console.log("No token found in localStorage for request:", config.url);
     }
     return config;
   },
   (error) => {
+    console.error("Request interceptor error:", error);
     return Promise.reject(error);
   },
 );
@@ -27,6 +35,7 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      // Clear token on 401
       localStorage.removeItem("authToken");
       window.dispatchEvent(
         new CustomEvent("auth-expired", {
@@ -47,7 +56,7 @@ export const authAPI = {
   login: async (credentials) => {
     const response = await api.post(API_ENDPOINTS.LOGIN, credentials);
 
-    // store token in localStorage
+    // Store token in localStorage for Safari fallback
     if (response.data.token) {
       localStorage.setItem("authToken", response.data.token);
     }
@@ -56,7 +65,7 @@ export const authAPI = {
   },
 
   logout: async () => {
-    // delete token from localStorage
+    // Remove token from localStorage before logout request
     localStorage.removeItem("authToken");
     const response = await api.delete(API_ENDPOINTS.LOGOUT);
     return response.data;

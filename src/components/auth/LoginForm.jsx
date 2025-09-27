@@ -49,6 +49,7 @@ const LoginForm = () => {
         const result = await login(loginData);
 
         if (result.success) {
+          // Add small delay for iOS Safari compatibility
           setTimeout(() => {
             navigate("/dashboard");
           }, 100);
