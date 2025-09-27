@@ -9,10 +9,25 @@ const api = axios.create({
   withCredentials: true,
 });
 
+// Interceptor to attach token to requests
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("authToken");
+    if (token && !config.headers.Authorization) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
+      localStorage.removeItem("authToken");
       window.dispatchEvent(
         new CustomEvent("auth-expired", {
           detail: { error: error.response?.data },
@@ -31,10 +46,18 @@ export const authAPI = {
 
   login: async (credentials) => {
     const response = await api.post(API_ENDPOINTS.LOGIN, credentials);
+
+    // store token in localStorage
+    if (response.data.token) {
+      localStorage.setItem("authToken", response.data.token);
+    }
+
     return response.data;
   },
 
   logout: async () => {
+    // delete token from localStorage
+    localStorage.removeItem("authToken");
     const response = await api.delete(API_ENDPOINTS.LOGOUT);
     return response.data;
   },

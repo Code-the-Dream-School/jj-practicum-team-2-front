@@ -81,13 +81,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear local storage fallback and state
+      // Clear localStorage token and local storage fallback and state
+      localStorage.removeItem("authToken");
       authStorage.clearAuth();
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
     }
   };
 
   const forceLogout = () => {
+    localStorage.removeItem("authToken");
     authStorage.clearAuth();
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   };
