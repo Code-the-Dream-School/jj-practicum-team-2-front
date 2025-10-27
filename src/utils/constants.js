@@ -1,19 +1,27 @@
 // Determine API base URL based on environment
 const getApiBaseUrl = () => {
+  // Use environment variable if explicitly set
   if (import.meta.env.VITE_API_BASE_URL) {
     return import.meta.env.VITE_API_BASE_URL;
   }
 
-  if (import.meta.env.PROD) {
-    const currentDomain = window.location.hostname;
-    if (currentDomain === "mentorhub-nmn2.onrender.com") {
-      return "https://jj-practicum-team-2-back.onrender.com";
-    } else {
-      console.warn("Unexpected domain in production:", currentDomain);
-      return "https://jj-practicum-team-2-back.onrender.com";
-    }
+  // Check if we're on specific production domains (strict checking)
+  const currentDomain = window.location.hostname;
+  const allowedProductionDomains = ["mentorhub-nmn2.onrender.com"];
+
+  if (allowedProductionDomains.includes(currentDomain)) {
+    return "https://jj-practicum-team-2-back.onrender.com";
   }
 
+  // Log warning for unexpected domains in production-like environments
+  if (
+    import.meta.env.PROD &&
+    !allowedProductionDomains.includes(currentDomain)
+  ) {
+    console.warn("Unexpected production domain detected:", currentDomain);
+  }
+
+  // Default to localhost for development
   return "http://localhost:8000";
 };
 
