@@ -16,7 +16,11 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session }) {
   useEffect(() => {
     if (isOpen && session) {
       const sessionDate = new Date(session.date);
-      const formattedDate = sessionDate.toISOString().slice(0, 16); // Формат для datetime-local
+      
+      // Convert UTC date to local timezone for datetime-local input
+      // Subtract timezone offset to get correct local time display
+      const localDate = new Date(sessionDate.getTime() - sessionDate.getTimezoneOffset() * 60000);
+      const formattedDate = localDate.toISOString().slice(0, 16);
 
       setForm({
         title: session.title || "",
@@ -58,7 +62,16 @@ function EditSessionModal({ isOpen, onClose, onSubmit, session }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+    
+    // Convert local datetime-local input back to UTC for server
+    const formData = { ...form };
+    if (formData.date) {
+      // datetime-local gives us local time, convert to UTC
+      const localDate = new Date(formData.date);
+      formData.date = localDate.toISOString();
+    }
+    
+    onSubmit(formData);
     onClose();
   };
 

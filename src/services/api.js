@@ -15,13 +15,11 @@ api.interceptors.request.use(
     const token = localStorage.getItem("authToken");
     if (token && !config.headers.Authorization) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log(
-        "Added Authorization header to request:",
-        config.url,
-        token.substring(0, 20) + "...",
-      );
+      console.log("Added Authorization header to request:", config.url);
     } else if (!token) {
       console.log("No token found in localStorage for request:", config.url);
+    } else if (config.headers.Authorization) {
+      console.log("Authorization header already present for:", config.url);
     }
     return config;
   },
