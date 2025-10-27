@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../utils/constants";
 
 export default function SessionCard({
   session,
@@ -73,7 +74,7 @@ export default function SessionCard({
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/sessions/${session._id}/status`,
+        `${API_BASE_URL}/sessions/${session._id}/status`,
         {
           method: "PUT",
           headers: {
