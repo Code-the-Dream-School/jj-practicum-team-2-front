@@ -14,13 +14,25 @@ api.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("authToken");
     if (token && !config.headers.Authorization) {
-      config.headers.Authorization = `Bearer ${token}`;
-      console.log("Added Authorization header to request:", config.url);
+      if (token.split(".").length === 3) {
+        config.headers.Authorization = `Bearer ${token}`;
+        console.log("Added Authorization header to request:", config.url);
+      } else {
+        console.warn(
+          "Invalid token format detected, removing from localStorage",
+        );
+        localStorage.removeItem("authToken");
+      }
     } else if (!token) {
       console.log("No token found in localStorage for request:", config.url);
     } else if (config.headers.Authorization) {
       console.log("Authorization header already present for:", config.url);
     }
+
+    if (!config.timeout) {
+      config.timeout = 10000;
+    }
+
     return config;
   },
   (error) => {
@@ -32,6 +44,18 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Handle CORS errors
+    if (error.code === "ERR_NETWORK" || error.message.includes("CORS")) {
+      console.error("CORS or network error detected:", {
+        message: error.message,
+        config: {
+          url: error.config?.url,
+          baseURL: error.config?.baseURL,
+          method: error.config?.method,
+        },
+      });
+    }
+
     if (error.response?.status === 401) {
       // Clear token on 401
       localStorage.removeItem("authToken");

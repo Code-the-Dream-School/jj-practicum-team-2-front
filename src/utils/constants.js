@@ -1,12 +1,30 @@
-export const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL || "http://localhost:8000") + "/api/v1";
+// Determine API base URL based on environment
+const getApiBaseUrl = () => {
+  if (import.meta.env.VITE_API_BASE_URL) {
+    return import.meta.env.VITE_API_BASE_URL;
+  }
+
+  if (import.meta.env.PROD) {
+    const currentDomain = window.location.hostname;
+    if (currentDomain === "mentorhub-nmn2.onrender.com") {
+      return "https://jj-practicum-team-2-back.onrender.com";
+    } else {
+      console.warn("Unexpected domain in production:", currentDomain);
+      return "https://jj-practicum-team-2-back.onrender.com";
+    }
+  }
+
+  return "http://localhost:8000";
+};
+
+export const API_BASE_URL = getApiBaseUrl() + "/api/v1";
 
 export const API_ENDPOINTS = {
   REGISTER: "/auth/register",
   LOGIN: "/auth/login",
-  LOGOUT: "/auth/logout", // Backend uses DELETE method
+  LOGOUT: "/auth/logout",
   PROFILE: "/auth/profile",
-  CHECK_AUTH: "/auth/me", // New endpoint to check authentication
+  CHECK_AUTH: "/auth/me",
   FORGOT_PASSWORD: "/auth/forgot-password",
   RESET_PASSWORD: "/auth/reset-password",
   MAIN: "/",
