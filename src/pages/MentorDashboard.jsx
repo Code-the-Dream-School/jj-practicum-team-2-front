@@ -6,6 +6,7 @@ import WeeklySessionsView from "../components/dashboard/WeeklySessionsView";
 import Modal from "../components/common/Modal";
 import EditSessionModal from "../components/common/EditSessionModal";
 import { AcademicCapIcon } from "@heroicons/react/24/solid";
+import { API_BASE_URL } from "../utils/constants";
 
 export default function MentorDashboard() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,7 +40,7 @@ export default function MentorDashboard() {
         capacity: sessionData.capacity,
       };
 
-      const response = await fetch("http://localhost:8000/api/v1/sessions", {
+      const response = await fetch(`${API_BASE_URL}/sessions`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -66,7 +67,7 @@ export default function MentorDashboard() {
   const handleEditSession = async (sessionData) => {
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/sessions/${sessionToEdit._id}`,
+        `${API_BASE_URL}/sessions/${sessionToEdit._id}`,
         {
           method: "PUT",
           headers: {

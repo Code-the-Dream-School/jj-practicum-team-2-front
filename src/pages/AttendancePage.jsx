@@ -5,6 +5,7 @@ import MarkAttendance from "../components/attendance/MarkAttendance";
 import AttendanceList from "../components/attendance/AttendanceList";
 import AttendanceStatus from "../components/attendance/AttendanceStatus";
 import { ClipboardDocumentListIcon } from "@heroicons/react/24/outline";
+import { API_BASE_URL } from "../utils/constants";
 
 export default function AttendancePage() {
   const { user } = useAuth();
@@ -42,7 +43,7 @@ export default function AttendancePage() {
 
     try {
       const response = await fetch(
-        "http://localhost:8000/api/v1/sessions/mentor-dashboard",
+        `${API_BASE_URL}/sessions/mentor-dashboard`,
         {
           credentials: "include",
         },

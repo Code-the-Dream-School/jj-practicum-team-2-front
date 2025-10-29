@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
+import { API_BASE_URL } from "../../utils/constants";
 
 export default function SessionCard({
   session,
@@ -73,7 +74,7 @@ export default function SessionCard({
 
     try {
       const response = await fetch(
-        `http://localhost:8000/api/v1/sessions/${session._id}/status`,
+        `${API_BASE_URL}/sessions/${session._id}/status`,
         {
           method: "PUT",
           headers: {
@@ -200,18 +201,18 @@ export default function SessionCard({
       switch (statusType) {
         case "inProgress":
           return (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => handleAction(handleJoinSession)}
                 disabled={!session.zoomLink || isLoading}
-                className="btn btn-primary btn-rounded"
+                className="btn btn-primary btn-rounded w-full sm:w-auto"
               >
                 {session.zoomLink ? "Join Session" : "No Link Available"}
               </button>
               <button
                 onClick={() => handleAction(handleEndSession)}
                 disabled={isLoading}
-                className="btn btn-primary btn-rounded"
+                className="btn btn-primary btn-rounded w-full sm:w-auto"
               >
                 {isLoading ? "Ending..." : "End Session"}
               </button>
@@ -219,25 +220,25 @@ export default function SessionCard({
           );
         case "upcoming":
           return (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => handleAction(handleStartSession)}
                 disabled={isLoading}
-                className="btn btn-primary btn-rounded"
+                className="btn btn-primary btn-rounded w-full sm:w-auto"
               >
                 {isLoading ? "Starting..." : "Start Session"}
               </button>
               <button
                 onClick={() => handleAction(handleEditSession)}
                 disabled={isLoading}
-                className="btn btn-secondary btn-rounded"
+                className="btn btn-secondary btn-rounded w-full sm:w-auto"
               >
                 {isLoading ? "Loading..." : "Edit Session"}
               </button>
               <button
                 onClick={() => handleAction(handleCancelSession)}
                 disabled={isLoading}
-                className="btn btn-danger btn-rounded"
+                className="btn btn-danger btn-rounded w-full sm:w-auto"
               >
                 {isLoading ? "Canceling..." : "Cancel Session"}
               </button>
@@ -245,18 +246,18 @@ export default function SessionCard({
           );
         case "past":
           return (
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 onClick={() => handleAction(handleMarkAttendance)}
                 disabled={isLoading}
-                className="btn btn-primary btn-rounded"
+                className="btn btn-primary btn-rounded w-full sm:w-auto"
               >
                 {isLoading ? "Updating..." : "Mark Attendance"}
               </button>
               {session.recordingUrl && (
                 <button
                   onClick={() => window.open(session.recordingUrl, "_blank")}
-                  className="btn btn-secondary btn-rounded"
+                  className="btn btn-secondary btn-rounded w-full sm:w-auto"
                 >
                   Watch Recording
                 </button>

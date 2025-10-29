@@ -44,11 +44,26 @@ const LoginForm = () => {
 
     if (Object.keys(errors).length === 0) {
       setIsSubmitting(true);
-      const result = await login(loginData);
-      setIsSubmitting(false);
 
-      if (result.success) navigate("/dashboard");
-      else setLoginDataErrors({ api: result.error });
+      try {
+        const result = await login(loginData);
+
+        if (result.success) {
+          // Add small delay for iOS Safari compatibility
+          setTimeout(() => {
+            navigate("/dashboard");
+          }, 100);
+        } else {
+          setLoginDataErrors({ api: result.error });
+        }
+      } catch (error) {
+        console.error("Login error:", error);
+        setLoginDataErrors({
+          api: "Login failed. Please check your connection and try again.",
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 

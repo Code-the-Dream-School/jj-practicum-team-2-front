@@ -16,6 +16,15 @@ export const AuthProvider = ({ children }) => {
 
       const response = await authAPI.login(credentials);
 
+      // Save token to localStorage immediately after successful login
+      if (response.token) {
+        localStorage.setItem("authToken", response.token);
+        console.log(
+          "Token saved to localStorage:",
+          response.token.substring(0, 20) + "...",
+        );
+      }
+
       // Backend automatically sets signed cookies
       // We only store user data for development fallback
       if (response.user) {
@@ -47,6 +56,15 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: AUTH_ACTIONS.REGISTER_START });
 
       const response = await authAPI.register(userData);
+
+      // Save token to localStorage immediately after successful registration
+      if (response.token) {
+        localStorage.setItem("authToken", response.token);
+        console.log(
+          "Token saved to localStorage after registration:",
+          response.token.substring(0, 20) + "...",
+        );
+      }
 
       // Backend automatically sets signed cookies
       // We only store user data for development fallback
@@ -81,13 +99,15 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Logout error:", error);
     } finally {
-      // Clear local storage fallback and state
+      // Clear localStorage token and local storage fallback and state
+      localStorage.removeItem("authToken");
       authStorage.clearAuth();
       dispatch({ type: AUTH_ACTIONS.LOGOUT });
     }
   };
 
   const forceLogout = () => {
+    localStorage.removeItem("authToken");
     authStorage.clearAuth();
     dispatch({ type: AUTH_ACTIONS.LOGOUT });
   };

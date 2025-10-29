@@ -38,7 +38,16 @@ function Modal({ isOpen, onClose, onSubmit }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit(form);
+
+    // Convert local datetime-local input to UTC for server
+    const formData = { ...form };
+    if (formData.date) {
+      // datetime-local gives us local time, convert to UTC
+      const localDate = new Date(formData.date);
+      formData.date = localDate.toISOString();
+    }
+
+    onSubmit(formData);
     onClose();
   };
 
